@@ -53,6 +53,7 @@ public class ProductController {
 			@RequestParam(value = "page", defaultValue = "1") Integer page, Model model) {
 		Page<ProductDTO> pages = productService.findProductsByBrandId(brandId, page);
 
+		model.addAttribute("brand", brandService.findById(brandId));
 		model.addAttribute("products", pages.getContent());
 		model.addAttribute("pagination", new Pagination(pages.getTotalPages(), 5, page));
 		model.addAttribute("productPage", true);

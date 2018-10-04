@@ -1,13 +1,22 @@
 package poly.agile.webapp.service.user;
 
+import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import poly.agile.webapp.exception.DuplicateEmailException;
+import poly.agile.webapp.exception.DuplicatePhoneNumberException;
+import poly.agile.webapp.exception.DuplicateUsernameException;
+import poly.agile.webapp.model.Role;
 import poly.agile.webapp.model.User;
+import poly.agile.webapp.repository.RoleRepository;
 import poly.agile.webapp.repository.UserRepository;
 
 @Service
@@ -16,6 +25,9 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	private UserRepository userRepository;
 
+	@Autowired
+	private RoleRepository roleRepository;
+	
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		User user = userRepository.findByUsername(username);
@@ -30,12 +42,28 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public User create(User object) {
-		return null;
+	public User create(User u) {
+		if (u == null)
+			throw new NullPointerException();
+		if (findByUsername(u.getUsername()) != null)
+			throw new DuplicateUsernameException();
+		if (findByEmail(u.getEmail()) != null)
+			throw new DuplicateEmailException();
+		if (findByPhoneNumber(u.getPhoneNumber()) != null)
+			throw new DuplicatePhoneNumberException();
+		
+		u.setPassword(new BCryptPasswordEncoder().encode(u.getPassword()));
+		Set<Role> roles = new HashSet<>();
+		roles.add(roleRepository.findByName("USER"));
+		u.setRoles(roles);
+		u.setEnabled(true);
+		
+		return userRepository.save(u);
 	}
 
+	@Deprecated
 	@Override
-	public User update(User object) {
+	public User update(User u) {
 		return null;
 	}
 
@@ -46,12 +74,32 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public User findById(Integer id) {
-		return null;
+		return userRepository.getOne(id);
 	}
 
 	@Override
 	public List<User> findAll() {
-		return null;
+		return userRepository.findAll();
+	}
+
+	@Override
+	public User findByUsername(String username) {
+		return userRepository.findByUsername(username);
+	}
+
+	@Override
+	public User findByEmail(String email) {
+		return userRepository.findByEmail(email);
+	}
+
+	@Override
+	public User findByPhoneNumber(String phoneNumber) {
+		return userRepository.findByPhoneNumber(phoneNumber);
+	}
+
+	@Override
+	public void updateProfile(String username, String fullname, String address, Date birthdate, Boolean gender) {
+		userRepository.updateUser(username, fullname, address, birthdate, gender);
 	}
 
 }

@@ -27,7 +27,7 @@
 						<td th:text="${order.phoneNumber}">Số điện thoại</td>
 						<td th:text="${order.address}">Địa chỉ giao giao hàng</td>
 						<td
-							th:text="${#dates.format(order.createdTime, 'dd/MM/yyyy hh:mm:ss')}">Thời
+							th:text="${#dates.format(order.createdTime, 'dd/MM/yyyy hh:mm:ss aa')}">Thời
 							gian đặt hàng</td>
 						<td th:text="${order.status}">Trạng thái</td>
 						<td>
