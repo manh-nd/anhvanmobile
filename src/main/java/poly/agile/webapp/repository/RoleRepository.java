@@ -7,7 +7,5 @@ import poly.agile.webapp.model.Role;
 
 @Transactional
 public interface RoleRepository extends JpaRepository<Role, Integer> {
-	
-	Role findByName(String name);
-	
+
 }

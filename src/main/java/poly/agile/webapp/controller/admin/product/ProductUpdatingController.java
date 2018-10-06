@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.multipart.MultipartFile;
@@ -37,7 +36,7 @@ import poly.agile.webapp.service.specification.SpecificationSerivce;
 import poly.agile.webapp.util.StringUtils;
 
 @Controller
-@RequestMapping("/admin/product/{id}")
+@RequestMapping("/admin/product")
 @SessionAttributes(names = { "brands", "specifications", "product" })
 public class ProductUpdatingController {
 
@@ -53,19 +52,19 @@ public class ProductUpdatingController {
 	@Autowired
 	private Validator validator;
 
-	@GetMapping
+	@GetMapping("/{id}")
 	public String form(@PathVariable("id") Integer id, Model model) {
 		model.addAttribute("product", productService.findById(id));
 		return "admin/products/edit";
 	}
 
-	@PutMapping(params = "addSpecRow")
+	@PutMapping(value = { "/{id}" }, params = "addSpecRow")
 	public String addSpecRow(@ModelAttribute("product") Product product, @RequestParam("addSpecRow") Integer rowIndex) {
 		addProductSpecificationRow(product);
 		return "admin/products/edit";
 	}
 
-	@PutMapping(params = "addSpecDetailRow")
+	@PutMapping(value = { "/{id}" }, params = "addSpecDetailRow")
 	public String addSpecDetailRow(@ModelAttribute("product") Product product,
 			@RequestParam("addSpecDetailRow") Integer rowIndex) {
 		ProductSpec productSpec = product.getProductSpecs().get(rowIndex.intValue());
@@ -75,14 +74,14 @@ public class ProductUpdatingController {
 		return "admin/products/edit";
 	}
 
-	@PutMapping(params = "removeSpecRow")
+	@PutMapping(value = { "/{id}" }, params = "removeSpecRow")
 	public String removeSpecRow(@ModelAttribute("product") Product product,
 			@RequestParam("removeSpecRow") Integer rowIndex) {
 		product.getProductSpecs().remove(rowIndex.intValue());
 		return "admin/products/edit";
 	}
 
-	@PutMapping(params = "removeSpecDetailRow")
+	@PutMapping(value = { "/{id}" }, params = "removeSpecDetailRow")
 	public String removeSpecDetailRow(@ModelAttribute("product") Product product,
 			@RequestParam("removeSpecDetailRow") String values) {
 		String[] rows = values.split(",");
@@ -100,8 +99,8 @@ public class ProductUpdatingController {
 		return "admin/products/edit";
 	}
 
-	@PutMapping(params = "update")
-	public String replaceProduct(@ModelAttribute("product") Product product, @RequestPart("image") MultipartFile image,
+	@PutMapping(value = { "/{id}" }, params = "update")
+	public String replaceProduct(@ModelAttribute("product") Product product, @RequestParam("image") MultipartFile image,
 			Errors errors, SessionStatus status) {
 
 		validator.validate(product, errors);
@@ -138,7 +137,7 @@ public class ProductUpdatingController {
 			errors.rejectValue("name", "product.name", "Trùng tên sản phẩm!");
 			return "admin/products/edit";
 		}
-
+		
 		return "redirect:/admin/products";
 	}
 
