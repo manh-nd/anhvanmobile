@@ -32,19 +32,27 @@ public class ProfileController {
 	}
 
 	@PutMapping("/profile/change-information")
-	public String changeInformation(@Valid @ModelAttribute("profile") Profile profile, BindingResult result, Model model) {
+	public String changeInformation(@Valid @ModelAttribute("profile") Profile profile, BindingResult result,
+			Model model) {
 
-		if(result.hasErrors())
+		if (result.hasErrors()) {
+			User user = userService.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+			model.addAttribute("user", user);
+			result.getAllErrors().forEach(e->{
+				System.out.println(e.getDefaultMessage());
+			});
 			return "auth/profile";
-			
+		}
+		
+		String username = SecurityContextHolder.getContext().getAuthentication().getName();
+		System.out.println(username);
 		String fullname = profile.getFullname();
 		String address = profile.getAddress();
 		Date birthdate = profile.getBirthdate();
 		Boolean gender = profile.getGender();
 
 		try {
-			userService.updateProfile(SecurityContextHolder.getContext().getAuthentication().getName(), fullname,
-					address, birthdate, gender);
+			userService.updateProfile(username, fullname, address, birthdate, gender);
 			model.addAttribute("profileNav", true);
 			return "redirect:/profile";
 		} catch (Exception e) {

@@ -6,7 +6,7 @@ import lombok.Data;
 
 @Data
 public class Profile {
-
+	
 	private String fullname;
 
 	private String address;

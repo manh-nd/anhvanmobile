@@ -18,5 +18,8 @@ public interface UserService extends UserDetailsService, BaseService<User, Integ
 	User findByPhoneNumber(String phoneNumber);
 	
 	void updateProfile(String username, String fullname, String address, Date birthdate, Boolean gender);
+	
+	void setEnabledUser(Integer userId, boolean enabled);
+	
 
 }

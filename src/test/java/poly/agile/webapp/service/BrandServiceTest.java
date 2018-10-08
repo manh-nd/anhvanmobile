@@ -13,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import poly.agile.webapp.exception.DuplicateFieldException;
+import poly.agile.webapp.exception.DuplicateProductNameException;
 import poly.agile.webapp.model.Brand;
 import poly.agile.webapp.service.brand.BrandService;
 
@@ -60,7 +60,7 @@ public class BrandServiceTest {
 		assertNotNull(brandService.create(brand));
 	}
 
-	@Test(expected=DuplicateFieldException.class)
+	@Test(expected=DuplicateProductNameException.class)
 	public void testG_DuplicateBrand() {
 		Brand brand = new Brand("LG");
 		brandService.create(brand);
@@ -91,7 +91,7 @@ public class BrandServiceTest {
 		assertNotNull(brandService.update(brand));
 	}
 
-	@Test(expected = DuplicateFieldException.class)
+	@Test(expected = DuplicateProductNameException.class)
 	public void testL_UpdateBrandNameDuplicateBrandName() {
 		Brand brand = brandService.findBrandByName("a");
 		brand.setName("Nokia");

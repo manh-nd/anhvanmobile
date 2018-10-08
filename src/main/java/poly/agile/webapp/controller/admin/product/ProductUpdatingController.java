@@ -9,23 +9,23 @@ import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
-import org.springframework.validation.Validator;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.multipart.MultipartFile;
 
-import poly.agile.webapp.exception.DuplicateFieldException;
+import poly.agile.webapp.exception.DuplicateProductNameException;
 import poly.agile.webapp.model.Brand;
 import poly.agile.webapp.model.Product;
 import poly.agile.webapp.model.ProductSpec;
@@ -38,7 +38,7 @@ import poly.agile.webapp.util.StringUtils;
 
 @Controller
 @RequestMapping("/admin/product/{id}")
-@SessionAttributes(names = { "brands", "specifications", "product" })
+@SessionAttributes(names = { "brands", "specifications"})
 public class ProductUpdatingController {
 
 	@Autowired
@@ -50,36 +50,34 @@ public class ProductUpdatingController {
 	@Autowired
 	private ProductService productService;
 
-	@Autowired
-	private Validator validator;
-
 	@GetMapping
 	public String form(@PathVariable("id") Integer id, Model model) {
-		model.addAttribute("product", productService.findById(id));
-		return "admin/products/edit";
+		Product product = productService.findById(id);
+		model.addAttribute("product", product);
+		return "admin/product/edit";
 	}
 
 	@PutMapping(params = "addSpecRow")
 	public String addSpecRow(@ModelAttribute("product") Product product, @RequestParam("addSpecRow") Integer rowIndex) {
 		addProductSpecificationRow(product);
-		return "admin/products/edit";
+		return "admin/product/edit";
 	}
 
 	@PutMapping(params = "addSpecDetailRow")
 	public String addSpecDetailRow(@ModelAttribute("product") Product product,
 			@RequestParam("addSpecDetailRow") Integer rowIndex) {
 		ProductSpec productSpec = product.getProductSpecs().get(rowIndex.intValue());
-		ProductSpecDetail detail = new ProductSpecDetail();
-		detail.setProductSpec(productSpec);
-		productSpec.getProductSpecDetails().add(detail);
-		return "admin/products/edit";
+		ProductSpecDetail productSpecDetail = new ProductSpecDetail();
+		productSpecDetail.setProductSpec(productSpec);
+		productSpec.getProductSpecDetails().add(productSpecDetail);
+		return "admin/product/edit";
 	}
 
 	@PutMapping(params = "removeSpecRow")
 	public String removeSpecRow(@ModelAttribute("product") Product product,
 			@RequestParam("removeSpecRow") Integer rowIndex) {
 		product.getProductSpecs().remove(rowIndex.intValue());
-		return "admin/products/edit";
+		return "admin/product/edit";
 	}
 
 	@PutMapping(params = "removeSpecDetailRow")
@@ -97,20 +95,33 @@ public class ProductUpdatingController {
 		if (productSpec.getProductSpecDetails().isEmpty())
 			product.getProductSpecs().remove(specIndex);
 
-		return "admin/products/edit";
+		return "admin/product/edit";
 	}
 
 	@PutMapping(params = "update")
-	public String replaceProduct(@ModelAttribute("product") Product product, @RequestPart("image") MultipartFile image,
-			Errors errors, SessionStatus status) {
-
-		validator.validate(product, errors);
+	public String update(@Valid @ModelAttribute("product") Product product, Errors errors, SessionStatus status) {
 
 		if (errors.hasErrors()) {
-			return "admin/products/edit";
+			return "admin/product/edit";
+		}
+		
+		List<ProductSpec> productSpecs = product.getProductSpecs();
+		
+		if(productSpecs==null) {
+			product.setProductSpecs(new ArrayList<>());
+		}else {
+			productSpecs.forEach(spec->{
+				spec.getProductSpecDetails().forEach(specDetail -> {
+					if(specDetail.getProductSpec()==null) {
+						specDetail.setProductSpec(spec);
+					}
+				});
+			});
 		}
 
-		if (!image.isEmpty()) {
+		MultipartFile image = product.getImageFile();
+
+		if (image != null) {
 			try (InputStream in = image.getInputStream()) {
 
 				String brandFolder = product.getBrand().getName().toLowerCase().replaceAll("\\s+", "");
@@ -133,10 +144,10 @@ public class ProductUpdatingController {
 		try {
 			productService.update(product);
 			status.setComplete();
-		} catch (DuplicateFieldException e) {
+		} catch (DuplicateProductNameException e) {
 			e.printStackTrace();
 			errors.rejectValue("name", "product.name", "Trùng tên sản phẩm!");
-			return "admin/products/edit";
+			return "admin/product/edit";
 		}
 
 		return "redirect:/admin/products";
@@ -154,18 +165,22 @@ public class ProductUpdatingController {
 
 	private void addProductSpecificationRow(Product product) {
 		List<ProductSpec> productSpecs = product.getProductSpecs();
+		List<ProductSpecDetail> productSpecDetails = new ArrayList<>();
+		
 		if (productSpecs == null) {
 			productSpecs = new ArrayList<>();
 		}
+		
 		ProductSpec productSpec = new ProductSpec();
-		ProductSpecDetail detail = new ProductSpecDetail();
-		detail.setProductSpec(productSpec);
-		List<ProductSpecDetail> details = new ArrayList<>();
-		details.add(detail);
-		productSpec.setProductSpecDetails(details);
+		
+		ProductSpecDetail productSpecDetail = new ProductSpecDetail();
+		productSpecDetail.setProductSpec(productSpec);
+		productSpecDetails.add(productSpecDetail);
+		
 		productSpec.setProduct(product);
+		productSpec.setProductSpecDetails(productSpecDetails);
 		productSpecs.add(productSpec);
-
+		
 		product.setProductSpecs(productSpecs);
 	}
 

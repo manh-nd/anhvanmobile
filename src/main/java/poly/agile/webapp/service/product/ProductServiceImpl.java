@@ -11,7 +11,7 @@ import poly.agile.webapp.dto.ProductDTO;
 import poly.agile.webapp.dto.ProductMostSell;
 import poly.agile.webapp.dto.ProductMostView;
 import poly.agile.webapp.dto.ProductNewest;
-import poly.agile.webapp.exception.DuplicateFieldException;
+import poly.agile.webapp.exception.DuplicateProductNameException;
 import poly.agile.webapp.model.Brand;
 import poly.agile.webapp.model.Product;
 import poly.agile.webapp.repository.ProductRepository;
@@ -30,7 +30,7 @@ public class ProductServiceImpl implements ProductService {
 	public Product create(Product p) {
 		Product product = findProductByName(p.getName());
 		if (product != null)
-			throw new DuplicateFieldException();
+			throw new DuplicateProductNameException();
 		return productRepository.save(p);
 	}
 
@@ -39,7 +39,7 @@ public class ProductServiceImpl implements ProductService {
 		Product product = findProductByName(p.getName());
 		if (product != null)
 			if (!product.getId().equals(p.getId()))
-				throw new DuplicateFieldException();
+				throw new DuplicateProductNameException();
 		return productRepository.save(p);
 	}
 

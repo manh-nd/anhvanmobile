@@ -68,8 +68,14 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public boolean remove(User object) {
-		return false;
+	public boolean remove(User u) {
+		try {
+			userRepository.delete(u);
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
 	}
 
 	@Override
@@ -100,6 +106,11 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public void updateProfile(String username, String fullname, String address, Date birthdate, Boolean gender) {
 		userRepository.updateUser(username, fullname, address, birthdate, gender);
+	}
+
+	@Override
+	public void setEnabledUser(Integer userId, boolean enabled) {
+		userRepository.blockUser(userId, enabled);
 	}
 
 }

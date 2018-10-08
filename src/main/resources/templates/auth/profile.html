@@ -34,7 +34,10 @@
 								<td>Họ và tên</td>
 								<td>
 									<input class="form-control form-control-sm" th:name="fullname"
-										th:value="*{!#strings.isEmpty(fullname)} ? *{fullname} : ${user.fullname}">
+										th:value="*{!#strings.isEmpty(fullname)} ? *{fullname} : ${user.fullname}"
+										th:classappend="${#fields.hasErrors('fullname')}? 'is-invalid'">
+									<div th:if="${#fields.hasErrors('fullname')}"
+										th:errors="*{fullname}" class="invalid-feedback"></div>
 								</td>
 							</tr>
 							<tr>
@@ -51,7 +54,10 @@
 									<textarea rows="3" class="form-control form-control-sm"
 										th:name="address"
 										th:value="*{!#strings.isEmpty(address)} ? *{address} : ${user.address}"
-										th:text="*{!#strings.isEmpty(address)} ? *{address} : ${user.address}"></textarea>
+										th:text="*{!#strings.isEmpty(address)} ? *{address} : ${user.address}"
+										th:classappend="${#fields.hasErrors('address')}? 'is-invalid'"></textarea>
+									<div th:if="${#fields.hasErrors('address')}"
+										th:errors="*{address}" class="invalid-feedback"></div>
 								</td>
 							</tr>
 							<tr>
@@ -65,8 +71,8 @@
 							<tr>
 								<td>Giới tính</td>
 								<td>
-									<select th:name="gender"
-										class="form-control form-control-sm" style="width: 100px">
+									<select th:name="gender" class="form-control form-control-sm"
+										style="width: 100px">
 										<option th:value="true">Nam</option>
 										<option th:value="false">Nữ</option>
 									</select>

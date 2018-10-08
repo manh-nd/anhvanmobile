@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://wwww.thymeleaf.org" xmlns:layout=""
+	layout:decorate="~{layouts/admin-layout}">
+<head>
+<title>User</title>
+</head>
+<body>
+	<div layout:fragment="content">
+		<div class="container pt-5 pb-5">
+			<div class="table-reponsive">
+				<table class="table table-sm">
+					<thead>
+						<tr>
+							<th>ID</th>
+							<th>Họ và tên</th>
+							<th>Tài khoản</th>
+							<th>Email</th>
+							<th>SĐT</th>
+							<th>Địa chỉ</th>
+							<th>Trạng thái</th>
+							<th>Hành động</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="user : ${users}">
+							<td th:text="${user.id}">ID</td>
+							<td th:text="${user.fullname}">Họ và tên</td>
+							<td th:text="${user.username}">Tài khoản</td>
+							<td th:text="${user.email}">Email</td>
+							<td th:text="${user.phoneNumber}">SĐT</td>
+							<td th:text="${user.address}">Địa chỉ</td>
+							<td th:text="${user.enabled}">Trạng thái</td>
+							<td>
+								<form th:action="@{/admin/user/__${user.id}__}" th:method="PUT">
+									<button name="enabled" class="btn btn-sm btn-warning"
+										th:utext="#{icon.edit}">Sửa</button>
+									<button type="button" th:data-id="${user.id}"
+										class="btn btn-sm btn-danger remove-btn"
+										th:utext="#{icon.remove}">Xóa</button>
+								</form>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+
+	<th:block layout:fragment="script">
+		<script th:src="@{/js/delete-user.js}"></script>
+	</th:block>
+
+</body>
+</html>

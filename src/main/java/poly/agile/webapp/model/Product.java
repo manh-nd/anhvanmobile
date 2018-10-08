@@ -14,22 +14,26 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.Range;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import lombok.Getter;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.ToString;
 
 @Entity
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
+@EqualsAndHashCode(exclude = { "orderLines", "imageFile" })
+@ToString(exclude = { "orderLines", "imageFile" })
 public class Product implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -42,19 +46,23 @@ public class Product implements Serializable {
 	@Column(name = "PRODUCT_NAME", unique = true, length = 255)
 	private String name;
 
+	@ManyToOne(cascade = CascadeType.MERGE)
+	@JoinColumn(name = "BRAND_ID")
+	private Brand brand;
+
+	@NotNull(message = "Vui lòng nhập vào giá sản phẩm")
+	@Range(min = 0, max = 100000000, message = "Giá trong khoảng từ 0 - 100 triệu")
+	@Column(name = "PRICE")
+	private Integer price;
+
 	@Length(max = 45, message = "Đơn vị tính phải nhỏ hơn 45 ký tự!")
 	@Column(name = "PRODUCT_UNIT", length = 45)
 	private String unit;
 
-	@NotNull(message="Vui lòng nhập vào số lượng sản phẩm")
+	@NotNull(message = "Vui lòng nhập vào số lượng sản phẩm")
 	@Range(min = 0, max = 5000, message = "Số lượng trong khoảng từ 0 - 5000")
 	@Column(name = "QUANTITY_IN_STOCK")
 	private Integer qtyInStock;
-
-	@NotNull(message="Vui lòng nhập vào giá sản phẩm")
-	@Range(min = 0, max = 100000000, message = "Giá trong khoảng từ 0 - 100 triệu")
-	@Column(name = "PRICE")
-	private Integer price;
 
 	@Length(min = 0, max = 255, message = "Mô tả phải nhỏ hơn 256 ký tự")
 	@Column(name = "SHORT_DESCRIPTION", length = 255)
@@ -77,16 +85,15 @@ public class Product implements Serializable {
 	@Column(name = "CREATED_TIME", insertable = false, updatable = false)
 	private Date createdTime;
 
-	@ManyToOne(cascade = CascadeType.MERGE)
-	@JoinColumn(name = "BRAND_ID")
-	private Brand brand;
-
 	@Valid
-	@OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "product", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<ProductSpec> productSpecs;
 
 	@JsonIgnore
 	@OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private List<OrderLine> orderLines;
+
+	@Transient
+	private MultipartFile imageFile;
 
 }

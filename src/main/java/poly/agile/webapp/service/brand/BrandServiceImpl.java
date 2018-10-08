@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import poly.agile.webapp.exception.DuplicateFieldException;
+import poly.agile.webapp.exception.DuplicateBrandNameException;
 import poly.agile.webapp.model.Brand;
 import poly.agile.webapp.repository.BrandRespository;
 
@@ -19,7 +19,7 @@ public class BrandServiceImpl implements BrandService {
 	public Brand create(Brand b) {
 		Brand brand = repository.findByName(b.getName());
 		if (brand != null)
-			throw new DuplicateFieldException();
+			throw new DuplicateBrandNameException();
 		return repository.save(b);
 	}
 
@@ -28,7 +28,7 @@ public class BrandServiceImpl implements BrandService {
 		Brand brand = repository.findByName(b.getName());
 		if (brand != null)
 			if (!brand.getId().equals(b.getId()))
-				throw new DuplicateFieldException();
+				throw new DuplicateBrandNameException();
 		return repository.save(b);
 	}
 

@@ -44,7 +44,7 @@ public class OrderController {
 			return "redirect:/cart/show";
 		}
 
-		return "orders/order";
+		return "order/order";
 	}
 
 	@PostMapping
@@ -52,7 +52,7 @@ public class OrderController {
 		if (errors.hasErrors()) {
 			return "orders/order";
 		}
-		
+
 		Cart cart = (Cart) session.getAttribute("cart");
 
 		if (cart == null) {
@@ -76,7 +76,7 @@ public class OrderController {
 			line.setOrder(order);
 			orderLines.add(line);
 		});
-		
+
 		order.setOrderLines(orderLines);
 		order.setAmount(cart.getAmount());
 		order.setUser(user);

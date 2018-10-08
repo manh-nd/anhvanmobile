@@ -34,7 +34,7 @@ public class ProductController {
 		model.addAttribute("products", pages.getContent());
 		model.addAttribute("pagination", new Pagination(pages.getTotalPages(), 5, page));
 		model.addAttribute("productPage", true);
-		return "products/all";
+		return "product/all";
 	}
 
 	@GetMapping(value = "/products", params = "find")
@@ -45,7 +45,7 @@ public class ProductController {
 		model.addAttribute("products", pages.getContent());
 		model.addAttribute("pagination", new Pagination(pages.getTotalPages(), 5, page));
 		model.addAttribute("productPage", true);
-		return "products/search";
+		return "product/search";
 	}
 
 	@GetMapping("/products/{brandId}")
@@ -57,7 +57,7 @@ public class ProductController {
 		model.addAttribute("products", pages.getContent());
 		model.addAttribute("pagination", new Pagination(pages.getTotalPages(), 5, page));
 		model.addAttribute("productPage", true);
-		return "products/list-with-brand";
+		return "product/list-with-brand";
 	}
 
 	@GetMapping("/product/{id}")
@@ -67,7 +67,7 @@ public class ProductController {
 		productService.incrementViewCount(id);
 		model.addAttribute("product", product);
 		model.addAttribute("productPage", true);
-		return "products/detail";
+		return "product/detail";
 	}
 
 	@ModelAttribute("brands")

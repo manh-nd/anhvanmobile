@@ -42,7 +42,8 @@ public class User implements Serializable, UserDetails {
 	private Integer id;
 
 	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-	@JoinTable(name = "USER_ROLE", joinColumns = @JoinColumn(name = "USER_ID"), inverseJoinColumns = @JoinColumn(name = "ROLE_ID"))
+	@JoinTable(name = "USER_ROLE", joinColumns = @JoinColumn(name = "USER_ID"), 
+	inverseJoinColumns = @JoinColumn(name = "ROLE_ID"))
 	private Set<Role> roles;
 
 	@Column(name = "FULL_NAME", length = 45)
@@ -80,7 +81,7 @@ public class User implements Serializable, UserDetails {
 	@Column(name = "UPDATED_TIME", insertable = false, updatable = false)
 	private Date updatedTime;
 
-	@OneToMany(mappedBy = "user")
+	@OneToMany(mappedBy = "user", cascade=CascadeType.ALL, orphanRemoval=true)
 	private List<Order> orders;
 
 	@Override

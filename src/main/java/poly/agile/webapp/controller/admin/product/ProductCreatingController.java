@@ -9,10 +9,11 @@ import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.Errors;
-import org.springframework.validation.Validator;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,7 +24,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.multipart.MultipartFile;
 
-import poly.agile.webapp.exception.DuplicateFieldException;
+import poly.agile.webapp.exception.DuplicateProductNameException;
 import poly.agile.webapp.model.Brand;
 import poly.agile.webapp.model.Product;
 import poly.agile.webapp.model.ProductSpec;
@@ -47,13 +48,10 @@ public class ProductCreatingController {
 
 	@Autowired
 	private ProductService productService;
-	
-	@Autowired
-	private Validator validator;
 
 	@GetMapping
 	public String create() {
-		return "admin/products/add";
+		return "admin/product/add";
 	}
 
 	@GetMapping("/clearForm")
@@ -65,7 +63,7 @@ public class ProductCreatingController {
 	@PostMapping(params = "addSpecRow")
 	public String addSpecRow(@ModelAttribute("product") Product product, @RequestParam("addSpecRow") Integer rowIndex) {
 		addProductSpecificationRow(product);
-		return "admin/products/add";
+		return "admin/product/add";
 	}
 
 	@PostMapping(params = "addSpecDetailRow")
@@ -75,7 +73,7 @@ public class ProductCreatingController {
 		ProductSpecDetail detail = new ProductSpecDetail();
 		detail.setProductSpec(productSpec);
 		productSpec.getProductSpecDetails().add(detail);
-		return "admin/products/add";
+		return "admin/product/add";
 	}
 
 	@PostMapping(params = "removeSpecRow")
@@ -83,7 +81,7 @@ public class ProductCreatingController {
 			@RequestParam("removeSpecRow") Integer rowIndex) {
 		System.err.println("Product specification size: " + product.getProductSpecs().size());
 		product.getProductSpecs().remove(rowIndex.intValue());
-		return "admin/products/add";
+		return "admin/product/add";
 	}
 
 	@PostMapping(params = "removeSpecDetailRow")
@@ -101,20 +99,19 @@ public class ProductCreatingController {
 		if (productSpec.getProductSpecDetails().isEmpty())
 			product.getProductSpecs().remove(specIndex);
 
-		return "admin/products/add";
+		return "admin/product/add";
 	}
 
 	@PostMapping(params = "create")
-	public String create(@ModelAttribute("product") Product product, @RequestParam("image") MultipartFile image,
-			Errors errors, SessionStatus status) {
+	public String create(@Valid @ModelAttribute("product") Product product, Errors errors, SessionStatus status) {
 
-		validator.validate(product, errors);
-
-		if (errors.hasFieldErrors()) {
-			return "admin/products/add";
+		if (errors.hasErrors()) {
+			return "admin/product/add";
 		}
+		
+		MultipartFile image = product.getImageFile();
 
-		if (!image.isEmpty()) {
+		if (image != null) {
 			try (InputStream in = image.getInputStream()) {
 
 				String brandFolder = product.getBrand().getName().toLowerCase().replaceAll("\\s+", "");
@@ -138,12 +135,12 @@ public class ProductCreatingController {
 			productService.create(product);
 			status.setComplete();
 			return "redirect:/admin/products";
-		} catch (DuplicateFieldException e) {
+		} catch (DuplicateProductNameException e) {
 			errors.rejectValue("name", "product.name", "Trùng tên sản phẩm!");
-			return "admin/products/add";
+			return "admin/product/add";
 		} catch (Exception e) {
 			e.printStackTrace();
-			return "admin/products/add";
+			return "admin/product/add";
 		}
 	}
 

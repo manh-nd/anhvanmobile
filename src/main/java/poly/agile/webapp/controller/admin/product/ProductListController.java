@@ -26,7 +26,7 @@ public class ProductListController {
 		model.addAttribute("products", pages.getContent());
 		model.addAttribute("pagination", pagination);
 		model.addAttribute("adminProductPage", true);
-		return "admin/products/list";
+		return "admin/product/list";
 	}
 
 }

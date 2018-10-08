@@ -36,20 +36,20 @@ public class OrderController {
 		Page<OrderDTO> pages = orderService.getPages(page);
 		model.addAttribute("orders", pages.getContent());
 		model.addAttribute("pagination", new Pagination(pages.getTotalPages(), 5, page));
-		return "admin/orders/list";
+		return "admin/order/list";
 	}
 
 	@GetMapping("/order/{id}")
 	public String getOrder(Model model, @PathVariable("id") Integer id) {
 		Order order = orderService.findById(id);
 		model.addAttribute("order", order);
-		return "admin/orders/edit";
+		return "admin/order/edit";
 	}
 
 	@PutMapping(value = "/order/{id}", params = "update")
 	public String replaceOrder(@Valid @ModelAttribute("order") Order order, BindingResult result, Model model) {
 		if (result.hasErrors())
-			return "admin/orders/edit";
+			return "admin/order/edit";
 
 		// update
 		Order o = orderService.update(order);
@@ -57,7 +57,7 @@ public class OrderController {
 		if (o != null)
 			return "redirect:/admin/orders";
 
-		return "admin/orders/edit";
+		return "admin/order/edit";
 	}
 
 	@ModelAttribute("statuses")

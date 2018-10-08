@@ -6,6 +6,7 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -18,6 +19,7 @@ import javax.validation.Valid;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
@@ -25,7 +27,8 @@ import lombok.ToString;
 @Table(name = "product_spec")
 @Data
 @NoArgsConstructor
-@ToString(exclude = { "productSpecDetails" })
+@EqualsAndHashCode(exclude = { "product", "productSpecDetails" })
+@ToString(exclude = { "product", "productSpecDetails" })
 public class ProductSpec implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -35,7 +38,7 @@ public class ProductSpec implements Serializable {
 	private Integer id;
 
 	@JsonIgnore
-	@ManyToOne(cascade=CascadeType.PERSIST)
+	@ManyToOne(cascade = CascadeType.PERSIST)
 	@JoinColumn(name = "PRODUCT_ID")
 	private Product product;
 
@@ -44,7 +47,7 @@ public class ProductSpec implements Serializable {
 	private Specification specification;
 
 	@Valid
-	@OneToMany(mappedBy = "productSpec", cascade = CascadeType.ALL, orphanRemoval=true)
+	@OneToMany(mappedBy = "productSpec", fetch=FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<ProductSpecDetail> productSpecDetails;
 
 }

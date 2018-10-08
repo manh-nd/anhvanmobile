@@ -36,7 +36,7 @@ public class CartController {
 
 	@GetMapping("/show")
 	public String showCart() {
-		return "carts/show-cart";
+		return "cart/show-cart";
 	}
 
 	@GetMapping(value = "/update", params = { "key", "quantity" })
