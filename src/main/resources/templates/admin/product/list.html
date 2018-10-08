@@ -5,8 +5,16 @@
 <title>Product</title>
 </head>
 <body>
-	<div layout:fragment="content" class="container pt-5 pb-5">
-		<div class="row">
+	<div layout:fragment="content">
+		<div class="container pt-5 pb-t">
+			
+			<nav aria-label="breadcrumb">
+				<ol class="breadcrumb">
+					<li class="breadcrumb-item"><a th:href="@{/admin/products}">Quản lý sản phẩm</a></li>
+					<li class="breadcrumb-item active" aria-current="page">Danh sách sản phẩm</li>
+				</ol>
+			</nav>
+			
 			<a th:href="@{/admin/product}" id="create-btn"
 				class="btn btn-large btn-primary mb-2"
 				th:text="#{admin.product.button.add}">Thêm mới sản phẩm</a>
@@ -23,20 +31,19 @@
 				</thead>
 				<tbody>
 					<tr th:each="prod : ${products}" th:object="${prod}">
-						<td class="text-center">
-							<img th:src="${prod.thumbnail}" width="60px">
-						</td>
+						<td class="text-center"><img th:src="${prod.thumbnail}"
+							width="60px"></td>
 						<td th:text="*{id}">ID</td>
 						<td th:text="*{name}">Name</td>
 						<td th:text="*{#numbers.formatInteger(price, 3, 'POINT')}">Price</td>
-						<td>
-							<a th:text="#{admin.product.button.edit}"
-								th:href="@{/admin/product/__*{id}__}"
-								class="btn btn-sm btn-warning edit-btn" th:utext="#{icon.edit}">Sửa</a>
+						<td class="text-center"><a
+							th:text="#{admin.product.button.edit}"
+							th:href="@{/admin/product/__*{id}__}"
+							class="btn btn-sm btn-warning edit-btn" th:utext="#{icon.edit}">Sửa</a>
 							<button th:text="#{admin.product.button.remove}"
 								th:data-id="*{id}" th:data-name="*{name}"
-								class="btn btn-sm btn-danger remove-btn" th:utext="#{icon.remove}">Xóa</button>
-						</td>
+								class="btn btn-sm btn-danger remove-btn"
+								th:utext="#{icon.remove}">Xóa</button></td>
 					</tr>
 				</tbody>
 			</table>
@@ -45,11 +52,10 @@
 				<ul class="pagination">
 					<li class="page-item"
 						th:each="control, controlStat: ${pagination.controls}"
-						th:classappend="${control.actived} ? 'active'">
-						<a class="page-link"
-							th:href="${control.page}==1 ? @{/admin/products} : @{/admin/products(page=__${control.page}__)}"
-							th:text="${control.label}">1</a>
-					</li>
+						th:classappend="${control.actived} ? 'active'"><a
+						class="page-link"
+						th:href="${control.page}==1 ? @{/admin/products} : @{/admin/products(page=__${control.page}__)}"
+						th:text="${control.label}">1</a></li>
 				</ul>
 			</nav>
 		</div>

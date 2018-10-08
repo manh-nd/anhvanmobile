@@ -1,9 +1,9 @@
 $(document).ready(function() {
 	$(".remove-btn").click(function(e) {
-		var action = confirm("Bạn có muốn xóa thương hiệu này không?");
+		var action = confirm("Bạn có muốn xóa tài khoản này không?");
 		if (action) {
 			var id = $(this).data("id");
-			var req = "/admin/product/brand/".concat(id);
+			var req = "/admin/order/".concat(id);
 			$.ajax({
 				url : req,
 				type : 'DELETE',

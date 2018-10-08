@@ -3,8 +3,11 @@ package poly.agile.webapp.service.specification;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import poly.agile.webapp.dto.SpecificationDTO;
 import poly.agile.webapp.exception.DuplicateSpecificationNameException;
 import poly.agile.webapp.model.Specification;
 import poly.agile.webapp.repository.SpecificationRepository;
@@ -57,6 +60,15 @@ public class SpecificationServiceImpl implements SpecificationSerivce {
 	@Override
 	public Specification findByName(String name) {
 		return specificationRepository.findByName(name);
+	}
+
+	@Override
+	public Page<SpecificationDTO> getPages(int page, int size) {
+		if (page < 1)
+			page = 1;
+		if (size < 5)
+			size = 5;
+		return specificationRepository.getPages(PageRequest.of(page - 1, size));
 	}
 
 }

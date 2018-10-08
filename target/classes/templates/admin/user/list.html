@@ -2,21 +2,27 @@
 <html xmlns:th="http://wwww.thymeleaf.org" xmlns:layout=""
 	layout:decorate="~{layouts/admin-layout}">
 <head>
-<title>User</title>
+<title>Quản lý tài khoản</title>
 </head>
 <body>
 	<div layout:fragment="content">
 		<div class="container pt-5 pb-5">
+
+			<nav aria-label="breadcrumb">
+				<ol class="breadcrumb">
+					<li class="breadcrumb-item"><a th:href="@{/admin/users}">Quản lý tài khoản</a></li>
+					<li class="breadcrumb-item active" aria-current="page">Danh sách tài khoản</li>
+				</ol>
+			</nav>
+
 			<div class="table-reponsive">
 				<table class="table table-sm">
 					<thead>
 						<tr>
 							<th>ID</th>
-							<th>Họ và tên</th>
 							<th>Tài khoản</th>
 							<th>Email</th>
 							<th>SĐT</th>
-							<th>Địa chỉ</th>
 							<th>Trạng thái</th>
 							<th>Hành động</th>
 						</tr>
@@ -24,12 +30,11 @@
 					<tbody>
 						<tr th:each="user : ${users}">
 							<td th:text="${user.id}">ID</td>
-							<td th:text="${user.fullname}">Họ và tên</td>
 							<td th:text="${user.username}">Tài khoản</td>
 							<td th:text="${user.email}">Email</td>
 							<td th:text="${user.phoneNumber}">SĐT</td>
-							<td th:text="${user.address}">Địa chỉ</td>
-							<td th:text="${user.enabled}">Trạng thái</td>
+							<td th:text="${user.enabled} ? 'Hoạt động' : 'Khóa'">Trạng
+								thái</td>
 							<td>
 								<form th:action="@{/admin/user/__${user.id}__}" th:method="PUT">
 									<button name="enabled" class="btn btn-sm btn-warning"

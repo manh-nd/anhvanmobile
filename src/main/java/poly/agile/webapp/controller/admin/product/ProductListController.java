@@ -21,7 +21,7 @@ public class ProductListController {
 
 	@GetMapping("/products")
 	public String all(Model model, @RequestParam(value = "page", defaultValue = "1") Integer page) {
-		Page<ProductDTO> pages = productService.getPages(page);
+		Page<ProductDTO> pages = productService.getPages(page, 5);
 		Pagination pagination = new Pagination(pages.getTotalPages(), 10, page);
 		model.addAttribute("products", pages.getContent());
 		model.addAttribute("pagination", pagination);

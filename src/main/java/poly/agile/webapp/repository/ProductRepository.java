@@ -32,7 +32,7 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
 
 	@Query("SELECT new poly.agile.webapp.dto.ProductDTO"
 			+ "(p.id, p.brand.name, p.name, p.price, p.qtyInStock, p.shortDescription, p.thumbnail, p.view, p.warranty) "
-			+ "FROM Product p")
+			+ "FROM Product p ORDER BY p.id")
 	Page<ProductDTO> findProductBy(Pageable page);
 
 	@Query("SELECT new poly.agile.webapp.dto.ProductDTO"

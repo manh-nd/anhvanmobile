@@ -3,8 +3,11 @@ package poly.agile.webapp.service.brand;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import poly.agile.webapp.dto.BranDTO;
 import poly.agile.webapp.exception.DuplicateBrandNameException;
 import poly.agile.webapp.model.Brand;
 import poly.agile.webapp.repository.BrandRespository;
@@ -13,30 +16,31 @@ import poly.agile.webapp.repository.BrandRespository;
 public class BrandServiceImpl implements BrandService {
 
 	@Autowired
-	private BrandRespository repository;
+	private BrandRespository brandRepository;
 
 	@Override
 	public Brand create(Brand b) {
-		Brand brand = repository.findByName(b.getName());
+		Brand brand = brandRepository.findByName(b.getName());
 		if (brand != null)
 			throw new DuplicateBrandNameException();
-		return repository.save(b);
+		return brandRepository.save(b);
 	}
 
 	@Override
 	public Brand update(Brand b) {
-		Brand brand = repository.findByName(b.getName());
+		Brand brand = brandRepository.findByName(b.getName());
 		if (brand != null)
 			if (!brand.getId().equals(b.getId()))
 				throw new DuplicateBrandNameException();
-		return repository.save(b);
+		return brandRepository.save(b);
 	}
 
 	@Override
 	public boolean remove(Brand b) {
-		if(b==null) throw new NullPointerException();
+		if (b == null)
+			throw new NullPointerException();
 		try {
-			repository.delete(b);
+			brandRepository.delete(b);
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -46,17 +50,26 @@ public class BrandServiceImpl implements BrandService {
 
 	@Override
 	public Brand findById(Integer id) {
-		return repository.getOne(id);
+		return brandRepository.getOne(id);
 	}
 
 	@Override
 	public Brand findBrandByName(String name) {
-		return repository.findByName(name);
+		return brandRepository.findByName(name);
 	}
 
 	@Override
 	public List<Brand> findAll() {
-		return repository.findAll();
+		return brandRepository.findAll();
+	}
+
+	@Override
+	public Page<BranDTO> getPages(int page, int size) {
+		if (page < 1)
+			page = 1;
+		if (size < 5)
+			size = 5;
+		return brandRepository.getPages(PageRequest.of(page - 1, size));
 	}
 
 }

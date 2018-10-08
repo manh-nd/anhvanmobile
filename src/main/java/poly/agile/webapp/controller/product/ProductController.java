@@ -29,7 +29,7 @@ public class ProductController {
 
 	@GetMapping("/products")
 	public String show(Model model, @RequestParam(value = "page", defaultValue = "1") Integer page) {
-		Page<ProductDTO> pages = productService.getPages(page);
+		Page<ProductDTO> pages = productService.getPages(page, 8);
 
 		model.addAttribute("products", pages.getContent());
 		model.addAttribute("pagination", new Pagination(pages.getTotalPages(), 5, page));

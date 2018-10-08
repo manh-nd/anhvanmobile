@@ -38,7 +38,7 @@ import poly.agile.webapp.util.StringUtils;
 
 @Controller
 @RequestMapping("/admin/product/{id}")
-@SessionAttributes(names = { "brands", "specifications"})
+@SessionAttributes(names = { "brands", "specifications" })
 public class ProductUpdatingController {
 
 	@Autowired
@@ -104,15 +104,15 @@ public class ProductUpdatingController {
 		if (errors.hasErrors()) {
 			return "admin/product/edit";
 		}
-		
+
 		List<ProductSpec> productSpecs = product.getProductSpecs();
-		
-		if(productSpecs==null) {
+
+		if (productSpecs == null) {
 			product.setProductSpecs(new ArrayList<>());
-		}else {
-			productSpecs.forEach(spec->{
+		} else {
+			productSpecs.forEach(spec -> {
 				spec.getProductSpecDetails().forEach(specDetail -> {
-					if(specDetail.getProductSpec()==null) {
+					if (specDetail.getProductSpec() == null) {
 						specDetail.setProductSpec(spec);
 					}
 				});
@@ -166,21 +166,21 @@ public class ProductUpdatingController {
 	private void addProductSpecificationRow(Product product) {
 		List<ProductSpec> productSpecs = product.getProductSpecs();
 		List<ProductSpecDetail> productSpecDetails = new ArrayList<>();
-		
+
 		if (productSpecs == null) {
 			productSpecs = new ArrayList<>();
 		}
-		
+
 		ProductSpec productSpec = new ProductSpec();
-		
+
 		ProductSpecDetail productSpecDetail = new ProductSpecDetail();
 		productSpecDetail.setProductSpec(productSpec);
 		productSpecDetails.add(productSpecDetail);
-		
+
 		productSpec.setProduct(product);
 		productSpec.setProductSpecDetails(productSpecDetails);
 		productSpecs.add(productSpec);
-		
+
 		product.setProductSpecs(productSpecs);
 	}
 

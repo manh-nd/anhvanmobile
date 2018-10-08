@@ -7,9 +7,19 @@
 <body>
 	<div layout:fragment="content">
 		<div class="container pt-5 pb-5">
-			<h1>Thêm thương hiệu</h1>
-			<hr>
-			<form th:action="@{/admin/brand}" th:object="${brand}"
+
+			<nav aria-label="breadcrumb">
+				<ol class="breadcrumb">
+					<li class="breadcrumb-item"><a th:href="@{/admin/products}">Quản
+							lý sản phẩm</a></li>
+					<li class="breadcrumb-item"><a
+						th:href="@{/admin/product/brands}">Danh sách thương hiệu</a></li>
+					<li class="breadcrumb-item active" aria-current="page">Tạo
+						thương hiệu mới</li>
+				</ol>
+			</nav>
+
+			<form th:action="@{/admin/product/brand}" th:object="${brand}"
 				th:method="POST" enctype="multipart/form-data">
 				<div class="form-group">
 					<div>Tên thương hiệu</div>

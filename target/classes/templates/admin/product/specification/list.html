@@ -7,6 +7,14 @@
 <body>
 	<div layout:fragment="content">
 		<div class="container pt-5 pb-5">
+
+			<nav aria-label="breadcrumb">
+				<ol class="breadcrumb">
+					<li class="breadcrumb-item"><a th:href="@{/admin/products}">Quản lý sản phẩm</a></li>
+					<li class="breadcrumb-item active" aria-current="page">Danh sách thông số kỹ thuật</li>
+				</ol>
+			</nav>
+
 			<div class="table-reponsive">
 				<table class="table table-sm">
 					<thead>
@@ -21,13 +29,25 @@
 							<td th:text="${s.id}"></td>
 							<td th:text="${s.name}"></td>
 							<td><a class="btn btn-warning"
-								th:href="@{/admin/specification/__${s.id}__}"
+								th:href="@{/admin/product/specification/__${s.id}__}"
 								th:utext="#{icon.edit}">Sửa</a>
 								<button class="btn btn-danger remove-btn"
 									th:utext="#{icon.remove}">Xóa</button></td>
 						</tr>
 					</tbody>
 				</table>
+
+				<nav aria-label="page"
+					th:remove="${#lists.size(pagination.controls)}<=1 ? 'ALL' ">
+					<ul class="pagination">
+						<li class="page-item"
+							th:each="control, controlStat: ${pagination.controls}"
+							th:classappend="${control.actived} ? 'active'"><a
+							class="page-link"
+							th:href="${control.page}==1 ? @{/admin/product/specifications} : @{/admin/product/specifications(page=__${control.page}__)}"
+							th:text="${control.label}">1</a></li>
+					</ul>
+				</nav>
 			</div>
 		</div>
 	</div>

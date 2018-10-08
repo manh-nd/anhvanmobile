@@ -17,7 +17,7 @@ public class OrderServiceTest {
 	
 	@Test
 	public void testOrderList() {
-		orderService.getPages(0).getContent().forEach(e->{
+		orderService.getPages(0, 5).getContent().forEach(e->{
 			System.out.println(e);
 		});
 	}

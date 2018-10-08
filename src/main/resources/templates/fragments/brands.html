@@ -5,12 +5,12 @@
 <title>Brand navigator</title>
 </head>
 <body>
-	<div th:fragment="navigator"
-		class="logo-brand border border-success mb-4">
-		<div class="row">
+	<div th:fragment="navigator" class="mb-4">
+		<div class="row" style="margin: 0; padding: 0">
 			<div th:each="brand: ${brands}" class="col-sm-2"
-				th:classappend="border-right">
-				<a th:href="@{/products/__${brand.id}__}"><img
+				style="display: block; padding: 1px">
+				<a th:href="@{/products/__${brand.id}__}" class="border border-success"
+					style="display: block; margin: 1px"><img
 					th:src="${brand.logo}" width="100%"></a>
 			</div>
 		</div>

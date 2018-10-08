@@ -55,10 +55,12 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
-	public Page<ProductDTO> getPages(int page) {
+	public Page<ProductDTO> getPages(int page, int size) {
 		if (page <= 0)
 			page = 1;
-		return productRepository.findProductBy(PageRequest.of(page - 1, 8));
+		if (size < 5)
+			size = 5;
+		return productRepository.findProductBy(PageRequest.of(page - 1, size));
 	}
 
 	@Override

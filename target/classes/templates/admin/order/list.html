@@ -2,12 +2,22 @@
 <html xmlns:th="http://wwww.thymeleaf.org" xmlns:layout=""
 	layout:decorate="~{layouts/admin-layout}">
 <head>
-<title>Trang tổng hợp</title>
+<title>Quản lý đơn hàng</title>
 </head>
 <body>
 
 	<div layout:fragment="content">
 		<div class="container pt-5 pb-5">
+
+			<nav aria-label="breadcrumb">
+				<ol class="breadcrumb">
+					<li class="breadcrumb-item"><a th:href="@{/admin/orders}">Quản
+							lý đơn hàng</a></li>
+					<li class="breadcrumb-item active" aria-current="page">Danh
+						sách đơn hàng</li>
+				</ol>
+			</nav>
+
 			<table class="table table-sm">
 				<thead>
 					<tr>
@@ -30,11 +40,11 @@
 							th:text="${#dates.format(order.createdTime, 'dd/MM/yyyy hh:mm:ss aa')}">Thời
 							gian đặt hàng</td>
 						<td th:text="${order.status}">Trạng thái</td>
-						<td>
-							<a class="btn btn-warning" th:href="@{/admin/order/__${order.id}__}"
-								th:utext="#{icon.edit}">Sửa</a>
-							<button class="btn btn-danger remove-btn" th:utext="#{icon.remove}">Xóa</button>
-						</td>
+						<td class="text-center"><a class="btn btn-sm btn-warning"
+							th:href="@{/admin/order/__${order.id}__}" th:utext="#{icon.edit}">Sửa</a>
+							<button th:data-id="${order.id}"
+								class="btn btn-sm btn-danger remove-btn"
+								th:utext="#{icon.remove}">Xóa</button></td>
 					</tr>
 				</tbody>
 			</table>
@@ -43,15 +53,18 @@
 				<ul class="pagination">
 					<li class="page-item"
 						th:each="control, controlStat: ${pagination.controls}"
-						th:classappend="${control.actived} ? 'active'">
-						<a class="page-link"
-							th:href="${control.page}==1 ? @{/admin/orders} : @{/admin/orders(page=__${control.page}__)}"
-							th:text="${control.label}">1</a>
-					</li>
+						th:classappend="${control.actived} ? 'active'"><a
+						class="page-link"
+						th:href="${control.page}==1 ? @{/admin/orders} : @{/admin/orders(page=__${control.page}__)}"
+						th:text="${control.label}">1</a></li>
 				</ul>
 			</nav>
 		</div>
 	</div>
+
+	<th:block layout:fragment="script">
+		<script th:src="@{/js/delete-order.js}"></script>
+	</th:block>
 
 </body>
 </html>

@@ -20,7 +20,7 @@ public class Cart extends LinkedHashMap<Integer, Item> {
 			quantity++;
 		}
 	}
-	
+
 	public boolean updateQuantity(Integer key, Integer quantity) {
 		if (containsKey(key)) {
 			Item item = this.get(key);

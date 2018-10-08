@@ -3,7 +3,7 @@ $(document).ready(function() {
 		var action = confirm("Bạn có muốn xóa thương hiệu này không?");
 		if (action) {
 			var id = $(this).data("id");
-			var req = "/admin/brand/".concat(id);
+			var req = "/admin/product/brand/".concat(id);
 			$.ajax({
 				url : req,
 				type : 'DELETE',

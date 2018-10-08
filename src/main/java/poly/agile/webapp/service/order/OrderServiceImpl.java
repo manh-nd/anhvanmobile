@@ -60,10 +60,12 @@ public class OrderServiceImpl implements OrderService {
 	}
 
 	@Override
-	public Page<OrderDTO> getPages(int page) {
+	public Page<OrderDTO> getPages(int page, int size) {
 		if (page < 1)
 			page = 1;
-		return orderRepository.getPages(PageRequest.of(page - 1, 10));
+		if (size < 5)
+			size = 5;
+		return orderRepository.getPages(PageRequest.of(page - 1, size));
 	}
 
 	@Override
