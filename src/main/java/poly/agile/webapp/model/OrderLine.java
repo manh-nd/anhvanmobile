@@ -12,6 +12,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -31,6 +33,7 @@ public class OrderLine implements Serializable {
 
 	@ManyToOne(cascade = CascadeType.PERSIST)
 	@JoinColumn(name = "ORDER_ID")
+	@JsonIgnore
 	private Order order;
 
 	@ManyToOne(cascade = CascadeType.PERSIST)

@@ -1,20 +1,16 @@
 package poly.agile.webapp.controller.auth;
 
-import java.sql.Date;
-
-import javax.validation.Valid;
+import java.security.Principal;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
-import poly.agile.webapp.dto.Profile;
+import poly.agile.webapp.model.Order;
 import poly.agile.webapp.model.User;
+import poly.agile.webapp.service.order.OrderService;
 import poly.agile.webapp.service.user.UserService;
 
 @Controller
@@ -23,47 +19,27 @@ public class ProfileController {
 	@Autowired
 	private UserService userService;
 
+	@Autowired
+	private OrderService orderService;
+
 	@GetMapping("/profile")
-	public String profile(Model model) {
-		User user = userService.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
-		model.addAttribute("profileNav", true);
-		model.addAttribute("user", user);
+	public String profile() {
 		return "auth/profile";
 	}
 
-	@PutMapping("/profile/change-information")
-	public String changeInformation(@Valid @ModelAttribute("profile") Profile profile, BindingResult result,
-			Model model) {
-
-		if (result.hasErrors()) {
-			User user = userService.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
-			model.addAttribute("user", user);
-			result.getAllErrors().forEach(e->{
-				System.out.println(e.getDefaultMessage());
-			});
-			return "auth/profile";
-		}
-		
-		String username = SecurityContextHolder.getContext().getAuthentication().getName();
-		System.out.println(username);
-		String fullname = profile.getFullname();
-		String address = profile.getAddress();
-		Date birthdate = profile.getBirthdate();
-		Boolean gender = profile.getGender();
-
-		try {
-			userService.updateProfile(username, fullname, address, birthdate, gender);
-			model.addAttribute("profileNav", true);
-			return "redirect:/profile";
-		} catch (Exception e) {
-			e.printStackTrace();
-			return "auth/profile";
-		}
+	@GetMapping("/profile/user-info")
+	public @ResponseBody User getUser(Principal principal) {
+		return userService.findByUsername(principal.getName());
 	}
 
-	@ModelAttribute("profile")
-	public Profile getProfile() {
-		return new Profile();
+	@GetMapping("/profile/order/total-order")
+	public @ResponseBody Long getCount(Principal principal) {
+		return orderService.countNumberOfOrder(userService.findByUsername(principal.getName()));
+	}
+
+	@GetMapping("/profile/order/history")
+	public @ResponseBody List<Order> getOrder(Principal principal) {
+		return orderService.findOrderByUser(userService.findByUsername(principal.getName()));
 	}
 
 }

@@ -19,6 +19,8 @@ import javax.persistence.TemporalType;
 
 import org.hibernate.validator.constraints.Length;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -38,6 +40,7 @@ public class Order implements Serializable {
 
 	@ManyToOne
 	@JoinColumn(name = "USER_ID")
+	@JsonIgnore
 	private User user;
 
 	@ManyToOne
@@ -48,11 +51,11 @@ public class Order implements Serializable {
 	@Column(name = "CUSTOMER_NAME", nullable = false)
 	private String customerName;
 
-	@Length(min = 10, max = 255, message="Vui lòng nhập vào địa chỉ nhận hàng hợp lệ!")
+	@Length(min = 10, max = 255, message = "Vui lòng nhập vào địa chỉ nhận hàng hợp lệ!")
 	@Column(name = "SHIPPING_ADDRESS", nullable = false)
 	private String address;
-	
-	@Length(min = 9, max = 15, message="Số điện thoại phải từ 9 đến 15 ký tự số!")
+
+	@Length(min = 9, max = 15, message = "Số điện thoại phải từ 9 đến 15 ký tự số!")
 	@Column(name = "PHONE_NUMBER", nullable = false, length = 15)
 	private String phoneNumber;
 

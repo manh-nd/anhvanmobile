@@ -11,22 +11,25 @@
 
 			<nav aria-label="breadcrumb">
 				<ol class="breadcrumb">
-					<li class="breadcrumb-item"><a th:href="@{/admin/orders}">Quản
-							lý đơn hàng</a></li>
-					<li class="breadcrumb-item active" aria-current="page">Chi tiết đơn hàng</li>
+					<li class="breadcrumb-item">
+						<a th:href="@{/admin/orders}">Quản lý đơn hàng</a>
+					</li>
+					<li class="breadcrumb-item active" aria-current="page">Chi
+						tiết đơn hàng</li>
 				</ol>
 			</nav>
 
 			<form th:action="@{/admin/order/__${order.id}__}"
 				th:object="${order}" th:method="PUT">
 				<div class="form-group">
-					<label>Người nhận hàng</label> <input type="text"
-						th:field="*{customerName}" class="form-control form-control-sm">
+					<label>Người nhận hàng</label>
+					<input type="text" th:field="*{customerName}"
+						class="form-control form-control-sm">
 				</div>
 				<div class="form-group">
-					<label>Điện thoại liên hệ</label> <input type="text"
-						th:field="*{phoneNumber}" class="form-control form-control-sm"
-						readonly="readonly">
+					<label>Điện thoại liên hệ</label>
+					<input type="text" th:field="*{phoneNumber}"
+						class="form-control form-control-sm" readonly="readonly">
 				</div>
 				<div class="form-group">
 					<label>Địa chỉ nhận hàng</label>
@@ -66,8 +69,16 @@
 				</div>
 
 				<div class="form-group">
-					<label>Trạng thái đơn hàng</label> <select th:field="*{status}"
-						class="form-control form-control-sm" style="width: 200px">
+					<label>Tổng tiền</label>
+					<input th:field="*{amount}" class="form-control form-control-sm"
+						readonly="readonly">
+					<input type="hidden" th:field="*{user}">
+				</div>
+
+				<div class="form-group">
+					<label>Trạng thái đơn hàng</label>
+					<select th:field="*{status}" class="form-control form-control-sm"
+						style="width: 200px">
 						<option th:each="os : ${statuses}" th:value="${os.id}"
 							th:text="${os.name}">Chờ xác nhận</option>
 					</select>
@@ -77,6 +88,7 @@
 					<button class="btn btn-warning" name="update"
 						th:utext="|#{icon.edit} Sửa đơn hàng|"></button>
 				</div>
+				
 			</form>
 		</div>
 	</div>

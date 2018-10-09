@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import poly.agile.webapp.dto.OrderDTO;
 import poly.agile.webapp.model.Order;
 import poly.agile.webapp.model.OrderStatus;
+import poly.agile.webapp.model.User;
 import poly.agile.webapp.repository.OrderRepository;
 import poly.agile.webapp.repository.OrderStatusRepository;
 
@@ -71,6 +72,16 @@ public class OrderServiceImpl implements OrderService {
 	@Override
 	public List<OrderStatus> findAllOrderStatus() {
 		return orderStatusRepository.findAll();
+	}
+
+	@Override
+	public List<Order> findOrderByUser(User user) {
+		return orderRepository.findByUser(user);
+	}
+
+	@Override
+	public long countNumberOfOrder(User user) {
+		return orderRepository.countNumberOfOrder(user);
 	}
 
 }

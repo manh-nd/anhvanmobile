@@ -22,4 +22,14 @@ public class HomeController {
 		return "index";
 	}
 
+	@GetMapping("/rest/spec")
+	public String specPage() {
+		return "specification";
+	}
+
+	@GetMapping("/rest/prod")
+	public String prodPage() {
+		return "product";
+	}
+
 }

@@ -25,14 +25,18 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
+@ToString(exclude= {"orders","roles"})
 public class User implements Serializable, UserDetails {
 	private static final long serialVersionUID = 1L;
 
@@ -44,6 +48,7 @@ public class User implements Serializable, UserDetails {
 	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	@JoinTable(name = "USER_ROLE", joinColumns = @JoinColumn(name = "USER_ID"), 
 	inverseJoinColumns = @JoinColumn(name = "ROLE_ID"))
+	@JsonIgnore
 	private Set<Role> roles;
 
 	@Column(name = "FULL_NAME", length = 45)
@@ -82,6 +87,7 @@ public class User implements Serializable, UserDetails {
 	private Date updatedTime;
 
 	@OneToMany(mappedBy = "user", cascade=CascadeType.ALL, orphanRemoval=true)
+	@JsonIgnore
 	private List<Order> orders;
 
 	@Override
