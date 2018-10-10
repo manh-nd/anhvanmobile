@@ -6,9 +6,13 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import poly.agile.webapp.model.Order;
+import poly.agile.webapp.dto.OrderDTO;
+import poly.agile.webapp.dto.OrderLineDTO;
 import poly.agile.webapp.model.User;
 import poly.agile.webapp.service.order.OrderService;
 import poly.agile.webapp.service.user.UserService;
@@ -32,14 +36,34 @@ public class ProfileController {
 		return userService.findByUsername(principal.getName());
 	}
 
+	@PutMapping("/profile/change-fullname")
+	public @ResponseBody Boolean changeFullname(@RequestBody String fullname, Principal principal) {
+		return userService.changeFullName(principal.getName(), fullname);
+	}
+
+	@PutMapping("/profile/change-address")
+	public @ResponseBody Boolean changeAddress(@RequestBody String address, Principal principal) {
+		return userService.changeAddress(principal.getName(), address);
+	}
+
+	@PutMapping("/profile/change-gender")
+	public @ResponseBody Boolean changeGender(@RequestBody Boolean gender, Principal principal) {
+		return userService.changeGender(principal.getName(), gender);
+	}
+
 	@GetMapping("/profile/order/total-order")
 	public @ResponseBody Long getCount(Principal principal) {
 		return orderService.countNumberOfOrder(userService.findByUsername(principal.getName()));
 	}
 
 	@GetMapping("/profile/order/history")
-	public @ResponseBody List<Order> getOrder(Principal principal) {
-		return orderService.findOrderByUser(userService.findByUsername(principal.getName()));
+	public @ResponseBody List<OrderDTO> getOrderList(Principal principal) {
+		return orderService.findOrderListByUsername(principal.getName());
+	}
+
+	@GetMapping("/profile/order/{id}")
+	public @ResponseBody List<OrderLineDTO> getOrderLines(@PathVariable("id") Integer id) {
+		return orderService.findOrderLinesByOrderId(id);
 	}
 
 }

@@ -7,9 +7,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import poly.agile.webapp.model.User;
@@ -31,17 +29,6 @@ public class UserController {
 	@GetMapping("/user/{id}")
 	public User get(@PathVariable("id") Integer id) {
 		return userService.findUserById(id);
-	}
-
-	@PutMapping(value = "/user/{id}", params = "enabled")
-	public String setEnabled(@PathVariable("id") Integer userId, @RequestParam("enabled") Boolean enabled) {
-		try {
-			userService.setEnabledUser(userId, enabled);
-			return "redirect:/admin/users";
-		} catch (Exception e) {
-			e.printStackTrace();
-			return "admin/user/list";
-		}
 	}
 
 	@DeleteMapping("/user/{id}")

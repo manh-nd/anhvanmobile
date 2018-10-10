@@ -31,15 +31,18 @@
 								</tr>
 							</thead>
 							<tbody>
-								<tr data-ng-repeat="x in order.orderLines">
+								<tr data-ng-repeat="x in orderLines">
 									<td>{{$index + 1}}</td>
 									<td class="text-center">
-										<img src="{{x.product.thumbnail}}" style="width: 60px;">
+										<img data-ng-src="{{x.productThumbnail}}" style="width: 60px;">
 									</td>
 									<td>
-										<a href="{{'/product/' + x.product.id}}">{{x.product.name}}</a>
+										<a href="{{'/product/' + x.productId}}">{{x.productName}}</a>
 									</td>
-									<td>{{x.product.price | formatPrice}} <sup>đ</sup></td>
+									<td>
+										{{x.productPrice | formatPrice}}
+										<sup>đ</sup>
+									</td>
 									<td>{{x.quantity}}</td>
 								</tr>
 							</tbody>
@@ -53,5 +56,6 @@
 			</div>
 		</div>
 	</div>
+
 </body>
 </html>

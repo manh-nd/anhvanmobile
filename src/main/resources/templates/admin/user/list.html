@@ -10,8 +10,11 @@
 
 			<nav aria-label="breadcrumb">
 				<ol class="breadcrumb">
-					<li class="breadcrumb-item"><a th:href="@{/admin/users}">Quản lý tài khoản</a></li>
-					<li class="breadcrumb-item active" aria-current="page">Danh sách tài khoản</li>
+					<li class="breadcrumb-item">
+						<a th:href="@{/admin/users}">Quản lý tài khoản</a>
+					</li>
+					<li class="breadcrumb-item active" aria-current="page">Danh
+						sách tài khoản</li>
 				</ol>
 			</nav>
 
@@ -37,6 +40,10 @@
 								thái</td>
 							<td>
 								<form th:action="@{/admin/user/__${user.id}__}" th:method="PUT">
+									<button data-ng-click="viewOrder(x)"
+										class="btn btn-sm btn-success">
+										<i class="far fa-eye"></i>
+									</button>
 									<button name="enabled" class="btn btn-sm btn-warning"
 										th:utext="#{icon.edit}">Sửa</button>
 									<button type="button" th:data-id="${user.id}"

@@ -39,9 +39,13 @@
 							<table class="table table-sm table-bordered">
 								<tr>
 									<td>Họ và tên</td>
-									<td>{{user.fullname}}</td>
+									<td>
+										<input name="fullname" data-ng-model="user.fullname"
+											class="form-control form-control-sm" placeholder="Sửa tên">
+									</td>
 									<td style="width: 30px">
-										<button class="btn btn-sm btn-warning">
+										<button data-ng-click="changeFullname(user)"
+											class="btn btn-sm btn-warning">
 											<i class="fas fa-edit"></i>
 										</button>
 									</td>
@@ -63,18 +67,27 @@
 								</tr>
 								<tr>
 									<td>Địa chỉ</td>
-									<td>{{user.address}}</td>
+									<td>
+										<textarea rows="3" class="form-control form-control-sm"
+											data-ng-model="user.address"></textarea>
+									</td>
 									<td style="width: 30px">
-										<button class="btn btn-sm btn-warning">
+										<button data-ng-click="changeAddress(user)"
+											class="btn btn-sm btn-warning">
 											<i class="fas fa-edit"></i>
 										</button>
 									</td>
 								</tr>
 								<tr>
 									<td>Giới tính</td>
-									<td>{{user.gender}}</td>
+									<td>
+										<select data-ng-model="selectedGender"
+											data-ng-options="x.name for x in genders">
+										</select>
+									</td>
 									<td style="width: 30px">
-										<button class="btn btn-sm btn-warning">
+										<button data-ng-click="changeGender(selectedGender)"
+											class="btn btn-sm btn-warning">
 											<i class="fas fa-edit"></i>
 										</button>
 									</td>
@@ -120,18 +133,20 @@
 									<li class="breadcrumb-item active">Lịch sử đơn hàng</li>
 								</ol>
 							</nav>
-
-							<table class="table table-sm table-bordered">
+							<h3 data-ng-show="orders.length == 0">Bạn chưa đặt hàng lần
+								nào</h3>
+							<table data-ng-show="orders.length > 0"
+								class="table table-sm table-bordered">
 								<thead>
 									<tr>
 										<th>ID</th>
-										<th>Người đặt</th>
+										<th>Người nhận hàng</th>
 										<th>SĐT</th>
 										<th>Địa chỉ</th>
 										<th>Ngày đặt</th>
 										<th>Tổng tiền</th>
 										<th>Trạng thái</th>
-										<th>Xem</th>
+										<th>Chi tiết</th>
 									</tr>
 								</thead>
 								<tbody>
@@ -141,10 +156,10 @@
 										<td>{{x.phoneNumber}}</td>
 										<td>{{x.address}}</td>
 										<td>{{x.createdTime | date:'dd/MM/yyyy hh:mm:ss a'}}</td>
-										<td>{{x.amount | currency: '' : 0 }}</td>
-										<td>{{x.status.name}}</td>
+										<td>{{x.amount | formatPrice }}</td>
+										<td>{{x.status}}</td>
 										<td>
-											<button data-ng-click="viewOrder(x)"
+											<button data-ng-click="viewOrder(x.id)"
 												class="btn btn-sm btn-success">
 												<i class="far fa-eye"></i>
 											</button>

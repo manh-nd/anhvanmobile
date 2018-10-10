@@ -8,6 +8,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import poly.agile.webapp.dto.OrderDTO;
+import poly.agile.webapp.dto.OrderLineDTO;
 import poly.agile.webapp.model.Order;
 import poly.agile.webapp.model.OrderStatus;
 import poly.agile.webapp.model.User;
@@ -75,13 +76,18 @@ public class OrderServiceImpl implements OrderService {
 	}
 
 	@Override
-	public List<Order> findOrderByUser(User user) {
-		return orderRepository.findByUser(user);
+	public List<OrderDTO> findOrderListByUsername(String username) {
+		return orderRepository.findOrderListByUsername(username);
 	}
 
 	@Override
 	public long countNumberOfOrder(User user) {
 		return orderRepository.countNumberOfOrder(user);
+	}
+
+	@Override
+	public List<OrderLineDTO> findOrderLinesByOrderId(Integer id) {
+		return orderRepository.findOrderLinesByOrderId(id);
 	}
 
 }

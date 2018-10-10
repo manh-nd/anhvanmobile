@@ -1,7 +1,5 @@
 package poly.agile.webapp.repository;
 
-import java.util.Date;
-
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -20,13 +18,23 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 	User findByPhoneNumber(String phoneNumber);
 
 	@Modifying
-	@Query("UPDATE User u SET u.fullname = :fullname, u.address = :address, u.birthdate = :birthdate, u.gender = :gender "
-			+ "WHERE u.username = :username")
-	void updateUser(@Param("username") String username, @Param("fullname") String fullname,
-			@Param("address") String address, @Param("birthdate") Date birthdate, @Param("gender") Boolean gender);
+	@Query("UPDATE User u SET u.enabled = :disable WHERE u.username = :username")
+	void disableUser(@Param("username") String username, @Param("disable") boolean disable);
 
 	@Modifying
-	@Query("UPDATE User u SET u.enabled = :enabled WHERE u.id = :userId")
-	void blockUser(@Param("userId") Integer userId, @Param("enabled") boolean enabled);
+	@Query("UPDATE User u SET u.password = :password WHERE u.username = :username")
+	void updatePassword(@Param("username") String username, @Param("password") String password);
+
+	@Modifying
+	@Query("UPDATE User u SET u.fullname = :fullname WHERE u.username = :username")
+	void updateFullname(@Param("username") String username, @Param("fullname") String fullname);
+
+	@Modifying
+	@Query("UPDATE User u SET u.address = :address WHERE u.username = :username")
+	void updateAddress(@Param("username") String username, @Param("address") String address);
+
+	@Modifying
+	@Query("UPDATE User u SET u.gender = :gender WHERE u.username = :username")
+	void updateGender(@Param("username") String username, @Param("gender") boolean gender);
 
 }

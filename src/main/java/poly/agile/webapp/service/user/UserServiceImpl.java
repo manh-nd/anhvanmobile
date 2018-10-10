@@ -1,6 +1,5 @@
 package poly.agile.webapp.service.user;
 
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -27,7 +26,7 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	private RoleRepository roleRepository;
-	
+
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		User user = userRepository.findByUsername(username);
@@ -51,13 +50,13 @@ public class UserServiceImpl implements UserService {
 			throw new DuplicateEmailException();
 		if (findByPhoneNumber(u.getPhoneNumber()) != null)
 			throw new DuplicatePhoneNumberException();
-		
+
 		u.setPassword(new BCryptPasswordEncoder().encode(u.getPassword()));
 		Set<Role> roles = new HashSet<>();
 		roles.add(roleRepository.findByName("USER"));
 		u.setRoles(roles);
 		u.setEnabled(true);
-		
+
 		return userRepository.save(u);
 	}
 
@@ -104,13 +103,34 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public void updateProfile(String username, String fullname, String address, Date birthdate, Boolean gender) {
-		userRepository.updateUser(username, fullname, address, birthdate, gender);
+	public boolean disableUser(String username, boolean disable) {
+		userRepository.disableUser(username, disable);
+		return true;
 	}
 
 	@Override
-	public void setEnabledUser(Integer userId, boolean enabled) {
-		userRepository.blockUser(userId, enabled);
+	public boolean changePassword(String username, String password) {
+		userRepository.updatePassword(username, password);
+		return true;
 	}
+
+	@Override
+	public boolean changeFullName(String username, String fullname) {
+		userRepository.updateFullname(username, fullname);
+		return true;
+	}
+
+	@Override
+	public boolean changeAddress(String username, String address) {
+		 userRepository.updateAddress(username, address);
+		 return true;
+	}
+
+	@Override
+	public boolean changeGender(String username, boolean gender) {
+		userRepository.updateGender(username, gender);
+		return true;
+	}
+
 
 }

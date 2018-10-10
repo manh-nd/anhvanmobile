@@ -1,7 +1,5 @@
 package poly.agile.webapp.service.user;
 
-import java.util.Date;
-
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 import poly.agile.webapp.model.User;
@@ -16,10 +14,15 @@ public interface UserService extends UserDetailsService, BaseService<User, Integ
 	User findByEmail(String email);
 
 	User findByPhoneNumber(String phoneNumber);
-	
-	void updateProfile(String username, String fullname, String address, Date birthdate, Boolean gender);
-	
-	void setEnabledUser(Integer userId, boolean enabled);
-	
+
+	boolean disableUser(String username, boolean enabled);
+
+	boolean changePassword(String username, String password);
+
+	boolean changeFullName(String username, String fullname);
+
+	boolean changeAddress(String username, String address);
+
+	boolean changeGender(String username, boolean gender);
 
 }
