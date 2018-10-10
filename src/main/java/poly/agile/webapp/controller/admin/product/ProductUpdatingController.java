@@ -1,14 +1,11 @@
 package poly.agile.webapp.controller.admin.product;
 
+import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.ServletContext;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +15,7 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
@@ -50,6 +47,9 @@ public class ProductUpdatingController {
 	@Autowired
 	private ProductService productService;
 
+	@Autowired
+	private ServletContext context;
+
 	@GetMapping
 	public String form(@PathVariable("id") Integer id, Model model) {
 		Product product = productService.findById(id);
@@ -57,13 +57,13 @@ public class ProductUpdatingController {
 		return "admin/product/edit";
 	}
 
-	@PutMapping(params = "addSpecRow")
+	@PostMapping(params = "addSpecRow")
 	public String addSpecRow(@ModelAttribute("product") Product product, @RequestParam("addSpecRow") Integer rowIndex) {
 		addProductSpecificationRow(product);
 		return "admin/product/edit";
 	}
 
-	@PutMapping(params = "addSpecDetailRow")
+	@PostMapping(params = "addSpecDetailRow")
 	public String addSpecDetailRow(@ModelAttribute("product") Product product,
 			@RequestParam("addSpecDetailRow") Integer rowIndex) {
 		ProductSpec productSpec = product.getProductSpecs().get(rowIndex.intValue());
@@ -73,14 +73,14 @@ public class ProductUpdatingController {
 		return "admin/product/edit";
 	}
 
-	@PutMapping(params = "removeSpecRow")
+	@PostMapping(params = "removeSpecRow")
 	public String removeSpecRow(@ModelAttribute("product") Product product,
 			@RequestParam("removeSpecRow") Integer rowIndex) {
 		product.getProductSpecs().remove(rowIndex.intValue());
 		return "admin/product/edit";
 	}
 
-	@PutMapping(params = "removeSpecDetailRow")
+	@PostMapping(params = "removeSpecDetailRow")
 	public String removeSpecDetailRow(@ModelAttribute("product") Product product,
 			@RequestParam("removeSpecDetailRow") String values) {
 		String[] rows = values.split(",");
@@ -98,7 +98,7 @@ public class ProductUpdatingController {
 		return "admin/product/edit";
 	}
 
-	@PutMapping(params = "update")
+	@PostMapping(params = "update")
 	public String update(@Valid @ModelAttribute("product") Product product, Errors errors, SessionStatus status) {
 
 		if (errors.hasErrors()) {
@@ -121,25 +121,26 @@ public class ProductUpdatingController {
 
 		MultipartFile image = product.getImageFile();
 
-		if (image != null) {
-			try (InputStream in = image.getInputStream()) {
+		if (image != null)
+			if (!image.isEmpty())
+				try {
+					System.out.println("update image");
+					String brandFolder = product.getBrand().getName().toLowerCase().replaceAll("\\s+", "");
+					String productName = StringUtils.formatProductName(product.getName());
+					String productThumbnail = productName + ".png";
 
-				String brandFolder = product.getBrand().getName().toLowerCase().replaceAll("\\s+", "");
-				String productName = StringUtils.formatProductName(product.getName());
-				String productThumbnail = productName + ".png";
+					String parent = context.getRealPath("/images/products/" + brandFolder);
+					File file = new File(parent);
+					if (!file.exists())
+						file.mkdirs();
 
-				String localPath = String.format("src/main/resources/static/images/products/%s/%s", brandFolder,
-						productThumbnail);
-				String databasePath = String.format("/images/products/%s/%s", brandFolder, productThumbnail);
-
-				Path target = Paths.get(localPath);
-				Files.copy(in, target, StandardCopyOption.REPLACE_EXISTING);
-				product.setThumbnail(databasePath);
-
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
+					String path = String.format("%s/%s", parent, productThumbnail);
+					String databasePath = String.format("/images/products/%s/%s", brandFolder, productThumbnail);
+					image.transferTo(new File(path));
+					product.setThumbnail(databasePath);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 
 		try {
 			productService.update(product);

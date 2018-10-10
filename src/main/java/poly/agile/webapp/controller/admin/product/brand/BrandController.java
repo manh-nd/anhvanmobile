@@ -1,24 +1,20 @@
 package poly.agile.webapp.controller.admin.product.brand;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
+import java.io.File;
+
+import javax.servlet.ServletContext;
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
-import org.springframework.validation.Validator;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -39,12 +35,12 @@ public class BrandController {
 	private BrandService brandService;
 
 	@Autowired
-	protected Validator validator;
+	private ServletContext context;
 
 	@GetMapping("/brands")
 	public String all(Model model, @RequestParam(value = "page", defaultValue = "1") Integer page) {
 		Page<BranDTO> pages = brandService.getPages(page, 5);
-		
+
 		Pagination pagination = new Pagination(pages.getTotalPages(), 5, page);
 		model.addAttribute("brands", pages.getContent());
 		model.addAttribute("pagination", pagination);
@@ -63,22 +59,22 @@ public class BrandController {
 	}
 
 	@PostMapping("/brand")
-	public String save(@ModelAttribute("brand") Brand brand, @RequestParam("image") MultipartFile image, Errors errors,
-			SessionStatus status) {
-
-		validator.validate(brand, errors);
+	public String save(@Valid @ModelAttribute("brand") Brand brand, Errors errors, SessionStatus status) {
 
 		if (errors.hasErrors()) {
 			return "admin/product/brand/add";
 		}
 
-		if (!image.isEmpty()) {
-			try (InputStream in = image.getInputStream()) {
-				Path target = Paths.get("src/main/resources/static/images/brands/" + brand.getName() + ".png");
-				Files.copy(in, target, StandardCopyOption.REPLACE_EXISTING);
+		MultipartFile image = brand.getImage();
+		if (image != null) {
+			try {
+				String parent = context.getRealPath("/images/brands/");
+				String filename = brand.getName() + ".png";
+				String path = parent + filename;
+				File file = new File(path);
+				image.transferTo(file);
 				brand.setLogo("/images/brands/" + brand.getName() + ".png");
-			} catch (IOException e) {
-				e.printStackTrace();
+			} catch (Exception e) {
 			}
 		}
 
@@ -93,25 +89,25 @@ public class BrandController {
 		}
 	}
 
-	@PutMapping("/brand/{id}")
-	public String replace(@ModelAttribute("brand") Brand brand, @RequestParam("image") MultipartFile image,
-			Errors errors, SessionStatus status) {
-
-		validator.validate(brand, errors);
+	@PostMapping("/brand/{id}")
+	public String replace(@Valid @ModelAttribute("brand") Brand brand, Errors errors, SessionStatus status) {
 
 		if (errors.hasErrors()) {
 			return "admin/product/brand/edit";
 		}
 
-		if (!image.isEmpty()) {
-			try (InputStream in = image.getInputStream()) {
-				Path target = Paths.get("src/main/resources/static/images/brands/" + brand.getName() + ".png");
-				Files.copy(in, target, StandardCopyOption.REPLACE_EXISTING);
-				brand.setLogo("/images/brands/" + brand.getName() + ".png");
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
+		MultipartFile image = brand.getImage();
+		if (image != null)
+			if (!image.isEmpty())
+				try {
+					String parent = context.getRealPath("/images/brands/");
+					String filename = brand.getName() + ".png";
+					String path = parent + filename;
+					File file = new File(path);
+					image.transferTo(file);
+					brand.setLogo("/images/brands/" + brand.getName() + ".png");
+				} catch (Exception e) {
+				}
 
 		try {
 			brandService.update(brand);

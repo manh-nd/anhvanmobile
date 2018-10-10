@@ -1,14 +1,11 @@
 package poly.agile.webapp.controller.admin.product;
 
+import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.ServletContext;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +45,9 @@ public class ProductCreatingController {
 
 	@Autowired
 	private ProductService productService;
+
+	@Autowired
+	private ServletContext context;
 
 	@GetMapping
 	public String create() {
@@ -108,22 +108,23 @@ public class ProductCreatingController {
 		if (errors.hasErrors()) {
 			return "admin/product/add";
 		}
-		
+
 		MultipartFile image = product.getImageFile();
 
 		if (image != null) {
-			try (InputStream in = image.getInputStream()) {
-
+			try  {
 				String brandFolder = product.getBrand().getName().toLowerCase().replaceAll("\\s+", "");
 				String productName = StringUtils.formatProductName(product.getName());
 				String productThumbnail = productName + ".png";
 
-				String localPath = String.format("src/main/resources/static/images/products/%s/%s", brandFolder,
-						productThumbnail);
+				String parent = context.getRealPath("/images/products/" + brandFolder);
+				File file = new File(parent);
+				if(!file.exists())
+					file.mkdirs();
+				
+				String path = String.format("%s/%s", parent, productThumbnail);
 				String databasePath = String.format("/images/products/%s/%s", brandFolder, productThumbnail);
-
-				Path target = Paths.get(localPath);
-				Files.copy(in, target, StandardCopyOption.REPLACE_EXISTING);
+				image.transferTo(new File(path));
 				product.setThumbnail(databasePath);
 
 			} catch (IOException e) {

@@ -17,7 +17,7 @@
 			</nav>
 
 			<form th:action="@{/admin/product/__${product.id}__}"
-				th:object="${product}" th:method="PUT" enctype="multipart/form-data">
+				th:object="${product}" th:method="POST" enctype="multipart/form-data">
 				<div class="form-row">
 					<div class="form-group col-md-9">
 						<label for="inputProductName">Tên sản phẩm</label> <input

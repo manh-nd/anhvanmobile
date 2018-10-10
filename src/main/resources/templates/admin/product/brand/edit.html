@@ -20,7 +20,7 @@
 			</nav>
 
 			<form th:action="@{/admin/product/brand/__${brand.id}__}"
-				th:object="${brand}" th:method="PUT" enctype="multipart/form-data">
+				th:object="${brand}" th:method="POST" enctype="multipart/form-data">
 				<div class="form-group">
 					<input type="text" th:field="*{name}"
 						class="form-control form-control-sm"
