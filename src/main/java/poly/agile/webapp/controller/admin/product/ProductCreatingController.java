@@ -112,23 +112,26 @@ public class ProductCreatingController {
 		MultipartFile image = product.getImageFile();
 
 		if (image != null) {
-			try  {
-				String brandFolder = product.getBrand().getName().toLowerCase().replaceAll("\\s+", "");
-				String productName = StringUtils.formatProductName(product.getName());
-				String productThumbnail = productName + ".png";
+			if (!image.isEmpty()) {
+				try {
+					String brandFolder = product.getBrand().getName().toLowerCase().replaceAll("\\s+", "");
+					String name = StringUtils.formatProductName(product.getName());
+					String extension = StringUtils.getFileExtension(image.getOriginalFilename());
+					String filename = name + extension;
 
-				String parent = context.getRealPath("/images/products/" + brandFolder);
-				File file = new File(parent);
-				if(!file.exists())
-					file.mkdirs();
-				
-				String path = String.format("%s/%s", parent, productThumbnail);
-				String databasePath = String.format("/images/products/%s/%s", brandFolder, productThumbnail);
-				image.transferTo(new File(path));
-				product.setThumbnail(databasePath);
+					String parent = context.getRealPath("/images/products/" + brandFolder);
+					File file = new File(parent);
+					if (!file.exists())
+						file.mkdirs();
 
-			} catch (IOException e) {
-				e.printStackTrace();
+					String path = String.format("%s/%s", parent, filename);
+					String thumbnail = String.format("/images/products/%s/%s", brandFolder, filename);
+					image.transferTo(new File(path));
+					product.setThumbnail(thumbnail);
+
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			}
 		}
 

@@ -120,27 +120,28 @@ public class ProductUpdatingController {
 		}
 
 		MultipartFile image = product.getImageFile();
-
-		if (image != null)
-			if (!image.isEmpty())
+		if (image != null) {
+			if (!image.isEmpty()) {
 				try {
-					System.out.println("update image");
 					String brandFolder = product.getBrand().getName().toLowerCase().replaceAll("\\s+", "");
-					String productName = StringUtils.formatProductName(product.getName());
-					String productThumbnail = productName + ".png";
-
+					String name = StringUtils.formatProductName(product.getName());
+					String extension = StringUtils.getFileExtension(image.getOriginalFilename());
+					String filename = name + extension;
 					String parent = context.getRealPath("/images/products/" + brandFolder);
 					File file = new File(parent);
 					if (!file.exists())
 						file.mkdirs();
 
-					String path = String.format("%s/%s", parent, productThumbnail);
-					String databasePath = String.format("/images/products/%s/%s", brandFolder, productThumbnail);
+					String path = String.format("%s/%s", parent, filename);
+					String thumbnail = String.format("/images/products/%s/%s", brandFolder, filename);
 					image.transferTo(new File(path));
-					product.setThumbnail(databasePath);
+					product.setThumbnail(thumbnail);
+
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
+			}
+		}
 
 		try {
 			productService.update(product);

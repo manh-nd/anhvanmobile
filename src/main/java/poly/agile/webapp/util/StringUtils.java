@@ -13,4 +13,16 @@ public class StringUtils {
 		if(str==null) throw new NullPointerException("Parameter str is null.");
 		return str.trim().replaceAll("\\s+", "-");
 	}
+	
+	public static String getFileExtension(String fileName) {
+		if(fileName==null) throw new NullPointerException("The param fileName is null!");
+		String name = fileName.trim();
+		if(name.contains(".")) {
+			int lastIndexOf = name.lastIndexOf(".");
+			String extension = name.substring(lastIndexOf, name.length());
+			return extension;
+		}
+		return null;
+	}
+	
 }
