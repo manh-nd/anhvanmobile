@@ -26,27 +26,27 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
 	Product findByBrand(Brand brand);
 
 	@Query("SELECT new poly.agile.webapp.dto.ProductDTO"
-			+ "(p.id, p.brand.name, p.name, p.price, p.qtyInStock, p.shortDescription, p.thumbnail, p.view, p.warranty) "
+			+ "(p.id, p.brand.name, p.name, p.price, p.qtyInStock, p.shortDescription, p.thumbnail, p.view, p.warranty, p.enabled) "
 			+ "FROM Product p WHERE p.brand.name like :search OR p.name like :search")
 	Page<ProductDTO> findProduct(@Param("search") String keyword, Pageable pageable);
 
 	@Query("SELECT new poly.agile.webapp.dto.ProductDTO"
-			+ "(p.id, p.brand.name, p.name, p.price, p.qtyInStock, p.shortDescription, p.thumbnail, p.view, p.warranty) "
+			+ "(p.id, p.brand.name, p.name, p.price, p.qtyInStock, p.shortDescription, p.thumbnail, p.view, p.warranty, p.enabled) "
 			+ "FROM Product p ORDER BY p.id")
 	Page<ProductDTO> findProductBy(Pageable page);
 
 	@Query("SELECT new poly.agile.webapp.dto.ProductDTO"
-			+ "(p.id, p.brand.name, p.name, p.price, p.qtyInStock, p.shortDescription, p.thumbnail, p.view, p.warranty) "
+			+ "(p.id, p.brand.name, p.name, p.price, p.qtyInStock, p.shortDescription, p.thumbnail, p.view, p.warranty, p.enabled) "
 			+ "FROM Product p WHERE p.brand = :brand")
 	Page<ProductDTO> findProductsByBrand(@Param("brand") Brand brand, Pageable pageable);
 
 	@Query("SELECT new poly.agile.webapp.dto.ProductDTO"
-			+ "(p.id, p.brand.name, p.name, p.price, p.qtyInStock, p.shortDescription, p.thumbnail, p.view, p.warranty) "
+			+ "(p.id, p.brand.name, p.name, p.price, p.qtyInStock, p.shortDescription, p.thumbnail, p.view, p.warranty, p.enabled) "
 			+ "FROM Product p WHERE p.brand.id = :id")
 	Page<ProductDTO> findProductsByBrandId(@Param("id") Integer id, Pageable pageable);
 
 	@Query("SELECT new poly.agile.webapp.dto.ProductDTO"
-			+ "(p.id, p.brand.name, p.name, p.price, p.qtyInStock, p.shortDescription, p.thumbnail, p.view, p.warranty) "
+			+ "(p.id, p.brand.name, p.name, p.price, p.qtyInStock, p.shortDescription, p.thumbnail, p.view, p.warranty, p.enabled) "
 			+ "FROM Product p WHERE p.id = :id")
 	ProductDTO findProductById(@Param("id") Integer id);
 
@@ -58,7 +58,7 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
 
 	@Query("SELECT new poly.agile.webapp.dto.ProductNewest"
 			+ "(p.id, p.brand.name, p.name, p.price, p.qtyInStock, p.shortDescription, p.thumbnail, p.view, p.warranty) "
-			+ "FROM Product p ORDER BY p.createdTime DESC")
+			+ "FROM Product p WHERE p.enabled = true ORDER BY p.createdTime DESC")
 	List<ProductNewest> findTopProductNewest(Pageable page);
 
 	default List<ProductNewest> findTop5ProductNewest() {
@@ -67,7 +67,7 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
 
 	@Query("SELECT new poly.agile.webapp.dto.ProductMostSell"
 			+ "(p.id, p.brand.name, p.name, p.price, p.qtyInStock, p.shortDescription, p.thumbnail, p.view, p.warranty, "
-			+ "SUM(ol.quantity) as qty) FROM Product p LEFT JOIN OrderLine ol ON p = ol.product "
+			+ "SUM(ol.quantity) as qty) FROM Product p LEFT JOIN OrderLine ol ON p = ol.product WHERE p.enabled = true "
 			+ "GROUP BY p.id, p.brand.name, p.name, p.price, p.qtyInStock, p.shortDescription, p.thumbnail, p.view, p.warranty "
 			+ "HAVING SUM(ol.quantity) > 0 ORDER BY qty DESC")
 	List<ProductMostSell> findTopProductMostSell(Pageable pageable);
@@ -78,11 +78,16 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
 
 	@Query("SELECT new poly.agile.webapp.dto.ProductMostView"
 			+ "(p.id, p.brand.name, p.name, p.price, p.qtyInStock, p.shortDescription, p.thumbnail, p.view, p.warranty) "
-			+ "FROM Product p ORDER BY p.view DESC")
+			+ "FROM Product p WHERE p.enabled = true ORDER BY p.view DESC")
 	List<ProductMostView> findTopProductMostView(Pageable pageable);
 
 	default List<ProductMostView> findTop4ProductMostView() {
 		return findTopProductMostView(PageRequest.of(0, 4));
 	}
+
+	@Query("SELECT new poly.agile.webapp.dto.ProductDTO"
+			+ "(p.id, p.brand.name, p.name, p.price, p.qtyInStock, p.shortDescription, p.thumbnail, p.view, p.warranty, p.enabled) "
+			+ "FROM Product p WHERE p.brand.name like :search OR p.name like :search")
+	Page<ProductDTO> getPages(@Param("search") String seach, Pageable pageable);
 
 }

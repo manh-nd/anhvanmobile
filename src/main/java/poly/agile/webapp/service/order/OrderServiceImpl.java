@@ -23,7 +23,6 @@ public class OrderServiceImpl implements OrderService {
 
 	@Autowired
 	private OrderStatusRepository orderStatusRepository;
-	
 
 	@Override
 	public Order create(Order o) {
@@ -88,6 +87,20 @@ public class OrderServiceImpl implements OrderService {
 	@Override
 	public List<OrderLineDTO> findOrderLinesByOrderId(Integer id) {
 		return orderRepository.findOrderLinesByOrderId(id);
+	}
+
+	@Override
+	public long getTotalOrder() {
+		return orderRepository.count();
+	}
+
+	@Override
+	public Page<OrderDTO> getPages(String search, int page, int size) {
+		if (page < 1)
+			page = 1;
+		if (size < 5)
+			size = 5;
+		return orderRepository.getPages("%" + search + "%", PageRequest.of(page - 1, size));
 	}
 
 }

@@ -40,4 +40,6 @@ public interface ProductService extends BaseService<Product, Integer>, DTOServic
 	
 	public void incrementViewCount(Integer id);
 
+	public long getTotalProduct();
+
 }

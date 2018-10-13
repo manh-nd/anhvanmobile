@@ -7,9 +7,10 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class BranDTO {
-
+public class UserDTO {
 	private Integer id;
-	private String name;
-
+	private String username;
+	private String email;
+	private String phoneNumber;
+	private	Boolean enabled;
 }

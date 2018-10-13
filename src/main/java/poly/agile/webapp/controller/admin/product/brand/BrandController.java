@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.multipart.MultipartFile;
 
-import poly.agile.webapp.dto.BranDTO;
+import poly.agile.webapp.dto.BrandDTO;
 import poly.agile.webapp.exception.DuplicateBrandNameException;
 import poly.agile.webapp.model.Brand;
 import poly.agile.webapp.service.brand.BrandService;
@@ -44,7 +44,18 @@ public class BrandController {
 
 	@GetMapping("/brands")
 	public String all(Model model, @RequestParam(value = "page", defaultValue = "1") Integer page) {
-		Page<BranDTO> pages = brandService.getPages(page, 5);
+		Page<BrandDTO> pages = brandService.getPages(page, 5);
+
+		Pagination pagination = new Pagination(pages.getTotalPages(), 5, page);
+		model.addAttribute("brands", pages.getContent());
+		model.addAttribute("pagination", pagination);
+		return "admin/product/brand/list";
+	}
+
+	@GetMapping(value = "/brands", params = "find")
+	public String all(Model model, @RequestParam(value = "page", defaultValue = "1") Integer page,
+			@RequestParam("find") String search) {
+		Page<BrandDTO> pages = brandService.getPages(search, page, 5);
 
 		Pagination pagination = new Pagination(pages.getTotalPages(), 5, page);
 		model.addAttribute("brands", pages.getContent());
@@ -119,7 +130,7 @@ public class BrandController {
 				}
 			}
 		}
-		
+
 		try {
 			brandService.update(brand);
 			status.setComplete();

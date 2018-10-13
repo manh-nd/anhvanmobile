@@ -11,9 +11,9 @@
 			th:each="prod : ${products}">
 			<div class="card h-100">
 				<div class="card-header">
-					<a th:href="@{/product/__${prod.id}__}">
-						<img class="card-img-top" th:src="@{${prod.thumbnail}}"
-							th:alt="${prod.name}" th:title="${prod.name}">
+					<a th:href="@{/product/__${prod.id}__}"> <img
+						class="card-img-top" th:src="@{${prod.thumbnail}}"
+						th:alt="${prod.name}" th:title="${prod.name}">
 					</a>
 				</div>
 				<div class="card-body">
@@ -22,9 +22,14 @@
 							X</a>
 					</h6>
 					<div class="card-text">
-						<span class="badge badge-danger"
-							th:utext="|${#numbers.formatInteger(prod.price, 3, 'POINT')} <sup>đ</sup>|">1.000</span>
-						<div th:text="|Bảo hành: ${prod.warranty}|"></div>
+						<th:block th:if="${prod.enabled}">
+							<span class="badge badge-danger"
+								th:utext="|${#numbers.formatInteger(prod.price, 3, 'POINT')} <sup>đ</sup>|">1.000</span>
+							<div th:text="|Bảo hành: ${prod.warranty}|"></div>
+						</th:block>
+						<th:block th:unless="${prod.enabled}">
+							<span class="badge badge-secondary">Ngừng kinh doanh</span>
+						</th:block>
 						<div class="text-secondary text-right pt-3"
 							th:text="|Lượt xem: ${prod.view}|"></div>
 					</div>
@@ -36,6 +41,6 @@
 			</div>
 		</div>
 	</div>
-	
+
 </body>
 </html>

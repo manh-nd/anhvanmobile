@@ -1,11 +1,14 @@
 package poly.agile.webapp.repository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
+import poly.agile.webapp.dto.UserDTO;
 import poly.agile.webapp.model.User;
 
 @Transactional
@@ -36,5 +39,12 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 	@Modifying
 	@Query("UPDATE User u SET u.gender = :gender WHERE u.username = :username")
 	void updateGender(@Param("username") String username, @Param("gender") boolean gender);
+
+	@Query("SELECT new poly.agile.webapp.dto.UserDTO(u.id, u.username, u.email, u.phoneNumber, u.enabled) FROM User u")
+	Page<UserDTO> getPages(Pageable pageable);
+
+	@Query("SELECT new poly.agile.webapp.dto.UserDTO(u.id, u.username, u.email, u.phoneNumber, u.enabled) "
+			+ "FROM User u WHERE u.username like :search OR u.email like :search OR u.phoneNumber like :search")
+	Page<UserDTO> getPages(@Param("search") String seach, Pageable pageable);
 
 }

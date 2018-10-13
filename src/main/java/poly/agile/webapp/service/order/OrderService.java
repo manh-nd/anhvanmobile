@@ -22,4 +22,6 @@ public interface OrderService extends BaseService<Order, Integer>, DTOService<Or
 
 	long countNumberOfOrder(User user);
 
+	long getTotalOrder();
+
 }

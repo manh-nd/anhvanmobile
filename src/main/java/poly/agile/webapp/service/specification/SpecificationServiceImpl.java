@@ -71,4 +71,13 @@ public class SpecificationServiceImpl implements SpecificationSerivce {
 		return specificationRepository.getPages(PageRequest.of(page - 1, size));
 	}
 
+	@Override
+	public Page<SpecificationDTO> getPages(String search, int page, int size) {
+		if (page < 1)
+			page = 1;
+		if (size < 5)
+			size = 5;
+		return specificationRepository.getPages("%" + search + "%", PageRequest.of(page - 1, size));
+	}
+
 }

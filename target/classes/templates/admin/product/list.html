@@ -7,17 +7,35 @@
 <body>
 	<div layout:fragment="content">
 		<div class="container pt-5 pb-t">
-			
+
 			<nav aria-label="breadcrumb">
 				<ol class="breadcrumb">
-					<li class="breadcrumb-item"><a th:href="@{/admin/products}">Quản lý sản phẩm</a></li>
-					<li class="breadcrumb-item active" aria-current="page">Danh sách sản phẩm</li>
+					<li class="breadcrumb-item"><a th:href="@{/admin/products}">Quản
+							lý sản phẩm</a></li>
+					<li class="breadcrumb-item active" aria-current="page">Danh
+						sách sản phẩm</li>
 				</ol>
 			</nav>
-			
-			<a th:href="@{/admin/product}" id="create-btn"
-				class="btn btn-large btn-primary mb-2"
-				th:text="#{admin.product.button.add}">Thêm mới sản phẩm</a>
+
+
+
+			<div class="clearfix">
+				<div class="float-left">
+					<a th:href="@{/admin/product}" id="create-btn"
+						class="btn btn-large btn-primary mb-2"
+						th:text="#{admin.product.button.add}">Thêm mới sản phẩm</a>
+				</div>
+
+				<form th:action="@{/admin/products}" th:method="GET"
+					class="form-inline mb-2 float-right">
+					<input class="form-control mr-1" type="search" name="find"
+						aria-label="Search">
+					<button class="btn btn-success" type="submit">
+						<i class="fas fa-search"></i> Tìm
+					</button>
+				</form>
+			</div>
+
 			<table class="table table-sm table-striped table-bordered">
 				<thead>
 					<tr>
@@ -47,17 +65,33 @@
 					</tr>
 				</tbody>
 			</table>
-			<nav aria-label="page"
+
+			<nav th:if="${param.find==null}" aria-label="page"
 				th:remove="${#lists.size(pagination.controls)}<=1 ? 'ALL' ">
 				<ul class="pagination">
 					<li class="page-item"
 						th:each="control, controlStat: ${pagination.controls}"
 						th:classappend="${control.actived} ? 'active'"><a
 						class="page-link"
-						th:href="${control.page}==1 ? @{/admin/products} : @{/admin/products(page=__${control.page}__)}"
+						th:href="${control.page}==1 ? @{/admin/products} : 
+						@{/admin/products(page=__${control.page}__)}"
 						th:text="${control.label}">1</a></li>
 				</ul>
 			</nav>
+
+			<nav th:unless="${param.find==null}" aria-label="page"
+				th:remove="${#lists.size(pagination.controls)}<=1 ? 'ALL' ">
+				<ul class="pagination">
+					<li class="page-item"
+						th:each="control, controlStat: ${pagination.controls}"
+						th:classappend="${control.actived} ? 'active'"><a
+						class="page-link"
+						th:href="${control.page}==1 ? @{/admin/products} : 
+						@{/admin/products(find=${param.find},page=__${control.page}__)}"
+						th:text="${control.label}">1</a></li>
+				</ul>
+			</nav>
+
 		</div>
 	</div>
 

@@ -69,6 +69,9 @@ public class ProductUpdatingController {
 		ProductSpec productSpec = product.getProductSpecs().get(rowIndex.intValue());
 		ProductSpecDetail productSpecDetail = new ProductSpecDetail();
 		productSpecDetail.setProductSpec(productSpec);
+		List<ProductSpecDetail> productSpecDetails = productSpec.getProductSpecDetails();
+		if(productSpecDetails==null)
+			productSpec.setProductSpecDetails(new ArrayList<>());
 		productSpec.getProductSpecDetails().add(productSpecDetail);
 		return "admin/product/edit";
 	}

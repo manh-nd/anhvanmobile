@@ -18,7 +18,16 @@
 				</ol>
 			</nav>
 
-			<table class="table table-sm">
+			<form th:action="@{/admin/orders}" th:method="GET"
+				class="form-inline mb-2">
+				<input class="form-control mr-1" type="search" name="find"
+					aria-label="Search">
+				<button class="btn btn-success" type="submit">
+					<i class="fas fa-search"></i> Tìm
+				</button>
+			</form>
+
+			<table class="table table-sm table-bordered">
 				<thead>
 					<tr>
 						<th>ID</th>
@@ -48,17 +57,33 @@
 					</tr>
 				</tbody>
 			</table>
-			<nav aria-label="page"
+
+			<nav th:if="${param.find==null}" aria-label="page"
 				th:remove="${#lists.size(pagination.controls)}<=1 ? 'ALL' ">
 				<ul class="pagination">
 					<li class="page-item"
 						th:each="control, controlStat: ${pagination.controls}"
 						th:classappend="${control.actived} ? 'active'"><a
 						class="page-link"
-						th:href="${control.page}==1 ? @{/admin/orders} : @{/admin/orders(page=__${control.page}__)}"
+						th:href="${control.page}==1 ? @{/admin/orders} : 
+						@{/admin/orders(page=__${control.page}__)}"
 						th:text="${control.label}">1</a></li>
 				</ul>
 			</nav>
+
+			<nav th:unless="${param.find==null}" aria-label="page"
+				th:remove="${#lists.size(pagination.controls)}<=1 ? 'ALL' ">
+				<ul class="pagination">
+					<li class="page-item"
+						th:each="control, controlStat: ${pagination.controls}"
+						th:classappend="${control.actived} ? 'active'"><a
+						class="page-link"
+						th:href="${control.page}==1 ? @{/admin/orders} : 
+						@{/admin/orders(find=${param.find}, page=__${control.page}__)}"
+						th:text="${control.label}">1</a></li>
+				</ul>
+			</nav>
+
 		</div>
 	</div>
 

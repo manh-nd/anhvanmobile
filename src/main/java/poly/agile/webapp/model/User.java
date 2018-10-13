@@ -1,6 +1,5 @@
 package poly.agile.webapp.model;
 
-import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
@@ -10,7 +9,6 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -26,7 +24,9 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -37,18 +37,19 @@ import lombok.ToString;
 @Setter
 @NoArgsConstructor
 @ToString(exclude= {"orders","roles"})
-public class User implements Serializable, UserDetails {
+@EqualsAndHashCode(exclude= {"orders","roles"})
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+public class User implements UserDetails {
 	private static final long serialVersionUID = 1L;
-
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "USER_ID")
 	private Integer id;
 
-	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@ManyToMany(cascade = CascadeType.ALL)
 	@JoinTable(name = "USER_ROLE", joinColumns = @JoinColumn(name = "USER_ID"), 
 	inverseJoinColumns = @JoinColumn(name = "ROLE_ID"))
-	@JsonIgnore
 	private Set<Role> roles;
 
 	@Column(name = "FULL_NAME", length = 45)

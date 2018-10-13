@@ -28,5 +28,15 @@ public class ProductListController {
 		model.addAttribute("adminProductPage", true);
 		return "admin/product/list";
 	}
+	
+	@GetMapping(value = "/products", params = "find")
+	public String all(Model model, @RequestParam(value = "page", defaultValue = "1") Integer page,
+			@RequestParam("find") String search) {
+		Page<ProductDTO> pages = productService.getPages(search, page, 5);
+		model.addAttribute("products", pages.getContent());
+		model.addAttribute("pagination", new Pagination(pages.getTotalPages(), 10, page));
+		model.addAttribute("adminProductPage", true);
+		return "admin/product/list";
+	}
 
 }

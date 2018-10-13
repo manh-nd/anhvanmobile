@@ -23,7 +23,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @NoArgsConstructor
-@ToString(exclude="productSpecs")
+@ToString(exclude = "productSpecs")
 public class Specification implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -32,8 +32,8 @@ public class Specification implements Serializable {
 	@Column(name = "SPECIFICATION_ID")
 	private Integer id;
 
-	@NotNull(message="Không được để trống tên thông số kỹ thuật!")
-	@Column(name = "SPECIFICATION_NAME")
+	@NotNull(message = "Không được để trống tên thông số kỹ thuật!")
+	@Column(name = "SPECIFICATION_NAME", nullable = false, unique = true)
 	private String name;
 
 	@JsonIgnore

@@ -130,4 +130,18 @@ public class ProductServiceImpl implements ProductService {
 		productRepository.incrementViewCount(id);
 	}
 
+	@Override
+	public long getTotalProduct() {
+		return productRepository.count();
+	}
+
+	@Override
+	public Page<ProductDTO> getPages(String search, int page, int size) {
+		if (page < 1)
+			page = 1;
+		if (size < 5)
+			size = 5;
+		return productRepository.getPages("%" + search + "%", PageRequest.of(page - 1, size));
+	}
+
 }

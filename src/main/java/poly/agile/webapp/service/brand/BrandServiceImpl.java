@@ -7,7 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import poly.agile.webapp.dto.BranDTO;
+import poly.agile.webapp.dto.BrandDTO;
 import poly.agile.webapp.exception.DuplicateBrandNameException;
 import poly.agile.webapp.model.Brand;
 import poly.agile.webapp.repository.BrandRespository;
@@ -64,12 +64,26 @@ public class BrandServiceImpl implements BrandService {
 	}
 
 	@Override
-	public Page<BranDTO> getPages(int page, int size) {
+	public Page<BrandDTO> getPages(int page, int size) {
 		if (page < 1)
 			page = 1;
 		if (size < 5)
 			size = 5;
 		return brandRepository.getPages(PageRequest.of(page - 1, size));
+	}
+
+	@Override
+	public long getTotalBrand() {
+		return brandRepository.count();
+	}
+
+	@Override
+	public Page<BrandDTO> getPages(String search, int page, int size) {
+		if (page < 1)
+			page = 1;
+		if (size < 5)
+			size = 5;
+		return brandRepository.getPages("%" + search + "%", PageRequest.of(page - 1, size));
 	}
 
 }

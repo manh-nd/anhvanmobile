@@ -5,11 +5,14 @@ import java.util.List;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import poly.agile.webapp.dto.UserDTO;
 import poly.agile.webapp.exception.DuplicateEmailException;
 import poly.agile.webapp.exception.DuplicatePhoneNumberException;
 import poly.agile.webapp.exception.DuplicateUsernameException;
@@ -130,6 +133,29 @@ public class UserServiceImpl implements UserService {
 	public boolean changeGender(String username, boolean gender) {
 		userRepository.updateGender(username, gender);
 		return true;
+	}
+
+	@Override
+	public Page<UserDTO> getPages(int page, int size) {
+		if (page < 1)
+			page = 1;
+		if (size < 5)
+			size = 5;
+		return userRepository.getPages(PageRequest.of(page - 1, size));
+	}
+
+	@Override
+	public long getTotalUser() {
+		return userRepository.count();
+	}
+
+	@Override
+	public Page<UserDTO> getPages(String search, int page, int size) {
+		if (page < 1)
+			page = 1;
+		if (size < 5)
+			size = 5;
+		return userRepository.getPages("%" + search + "%", PageRequest.of(page - 1, size));
 	}
 
 

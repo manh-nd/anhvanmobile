@@ -18,5 +18,6 @@ public class ProductDTO {
 	private String thumbnail;
 	private Integer view;
 	private String warranty;
+	private Boolean enabled;
 	
 }
