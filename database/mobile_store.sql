@@ -1,5 +1,5 @@
-CREATE DATABASE  IF NOT EXISTS `mobile_store` /*!40100 DEFAULT CHARACTER SET utf8 */;
-USE `mobile_store`;
+CREATE DATABASE  IF NOT EXISTS `xo62ltearkkvdnjp` /*!40100 DEFAULT CHARACTER SET utf8 */;
+USE `xo62ltearkkvdnjp`;
 -- MySQL dump 10.13  Distrib 8.0.12, for Win64 (x86_64)
 --
 -- Host: 127.0.0.1    Database: mobile_store
